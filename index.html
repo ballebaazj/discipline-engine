@@ -175,8 +175,35 @@ button:active{
 
 </div>
 
-<script>
-const START_DATE=new Date("2026-03-03T00:00:00+05:30");
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAk9apbcvCz6cHRVfkAMVpOn9t9Nv60FvE",
+  authDomain: "discipline-engine-6cb32.firebaseapp.com",
+  projectId: "discipline-engine-6cb32",
+  storageBucket: "discipline-engine-6cb32.firebasestorage.app",
+  messagingSenderId: "772221095332",
+  appId: "1:772221095332:web:a65d6cd7baf51613410531"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+const db = getFirestore(app);
+
+let currentUser = null;
+
+async function login(){
+  const result = await signInWithPopup(auth, provider);
+  currentUser = result.user;
+  alert("Logged in as " + currentUser.email);
+}
+
+window.login = login;
+</script>
 
 function getISTNow(){
   const now=new Date();
@@ -265,4 +292,5 @@ renderHeatmap();
 </script>
 
 </body>
+
 </html>
