@@ -13,43 +13,26 @@ body{
   background:linear-gradient(180deg,#0f1115,#1b1e26);
   font-family:'Inter',sans-serif;
   color:white;
-  -webkit-font-smoothing:antialiased;
 }
 
 header{
-  padding:40px 24px 20px 24px;
+  padding:30px 20px;
 }
 
 header h1{
   margin:0;
-  font-size:34px;
+  font-size:28px;
   font-weight:800;
 }
 
-.sub{
-  margin-top:6px;
-  opacity:0.6;
-}
-
-.day{
-  margin-top:20px;
-  font-size:18px;
-  opacity:0.8;
-}
-
-.progress{
-  height:6px;
-  background:rgba(255,255,255,0.1);
+button{
+  padding:10px 16px;
+  border:none;
   border-radius:10px;
-  overflow:hidden;
-  margin-top:12px;
-}
-
-.progress-fill{
-  height:100%;
+  font-weight:600;
   background:#4da3ff;
-  width:0%;
-  transition:width 0.4s ease;
+  color:white;
+  cursor:pointer;
 }
 
 .container{
@@ -61,93 +44,40 @@ header h1{
 
 .card{
   background:rgba(255,255,255,0.06);
-  backdrop-filter:blur(12px);
-  border-radius:18px;
+  border-radius:16px;
   padding:20px;
-  box-shadow:0 8px 30px rgba(0,0,0,0.4);
-}
-
-.card h2{
-  margin-top:0;
-  font-weight:600;
-  font-size:18px;
-}
-
-label{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin:12px 0;
-  font-size:15px;
-}
-
-input[type="checkbox"]{
-  transform:scale(1.3);
 }
 
 input[type="number"]{
   width:100%;
-  padding:12px;
-  border-radius:12px;
+  padding:10px;
+  border-radius:10px;
   border:none;
-  margin-top:10px;
   background:rgba(255,255,255,0.1);
   color:white;
-  font-size:16px;
+  margin-top:10px;
 }
 
-button{
-  margin-top:16px;
-  padding:14px;
-  width:100%;
-  border:none;
-  border-radius:14px;
-  background:#4da3ff;
-  color:white;
-  font-weight:600;
-  font-size:16px;
-  cursor:pointer;
-  transition:transform 0.1s ease;
-}
-
-button:active{
-  transform:scale(0.98);
+label{
+  display:flex;
+  justify-content:space-between;
+  margin:10px 0;
 }
 
 .meter{
   margin-top:20px;
-  text-align:center;
-  font-size:28px;
+  font-size:24px;
   font-weight:800;
+  text-align:center;
 }
-
-.heatmap{
-  margin-top:30px;
-  display:grid;
-  grid-template-columns:repeat(30,1fr);
-  gap:4px;
-}
-
-.cell{
-  aspect-ratio:1/1;
-  border-radius:4px;
-  background:rgba(255,255,255,0.05);
-}
-
-.low{ background:#3b1d1d; }
-.mid{ background:#4da3ff55; }
-.high{ background:#4da3ff; }
 </style>
 </head>
+
 <body>
-<button onclick="login()">Login with Google</button>
+
 <header>
   <h1>Discipline</h1>
-  <div class="sub">Consistency builds momentum</div>
-  <div class="day" id="dayDisplay"></div>
-  <div class="progress">
-    <div class="progress-fill" id="progressFill"></div>
-  </div>
+  <button onclick="login()">Login with Google</button>
 </header>
 
 <div class="container">
@@ -164,27 +94,23 @@ button:active{
   <div class="card">
     <h2>Study</h2>
     <input type="number" id="questions" placeholder="Questions completed">
-    <button onclick="submitEntry()">Submit</button>
+    <button onclick="submitEntry()" style="margin-top:15px;">Submit</button>
     <div class="meter" id="scoreDisplay">0%</div>
-  </div>
-
-  <div class="card">
-    <h2>Year Overview</h2>
-    <div class="heatmap" id="heatmap"></div>
   </div>
 
 </div>
 
+<!-- Firebase Module Script -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAk9apbcvCz6cHRVfkAMVpOn9t9Nv60FvE",
   authDomain: "discipline-engine-6cb32.firebaseapp.com",
   projectId: "discipline-engine-6cb32",
-  storageBucket: "discipline-engine-6cb32.firebasestorage.app",
+  storageBucket: "discipline-engine-6cb32.appspot.com",
   messagingSenderId: "772221095332",
   appId: "1:772221095332:web:a65d6cd7baf51613410531"
 };
@@ -202,16 +128,28 @@ async function login(){
   alert("Logged in as " + currentUser.email);
 }
 
-window.login = login;
-</script>
+async function saveDay(dateKey, data){
+  if(!currentUser){
+    alert("Login first");
+    return;
+  }
 
-function getISTNow(){
-  const now=new Date();
-  const utc=now.getTime()+(now.getTimezoneOffset()*60000);
-  return new Date(utc+(5.5*60*60000));
+  await setDoc(
+    doc(db, "users", currentUser.uid, "days", dateKey),
+    data
+  );
 }
 
-function formatDate(d){return d.toISOString().split("T")[0];}
+window.login = login;
+window.saveDay = saveDay;
+</script>
+
+<!-- Main App Logic -->
+<script>
+
+function formatDate(d){
+  return d.toISOString().split("T")[0];
+}
 
 function calculateHealth(){
   let s=0;
@@ -235,63 +173,28 @@ function weightedPercentage(h,s){
   return Math.round(((h/10)*0.5+(s/10)*0.5)*100);
 }
 
-function submitEntry(){
-  const now=getISTNow();
+async function submitEntry(){
+  const now=new Date();
   const yesterday=new Date(now);
   yesterday.setDate(yesterday.getDate()-1);
   const key=formatDate(yesterday);
-
-  let data=JSON.parse(localStorage.getItem("trackerData"))||{days:{}};
-  if(data.days[key]){
-    alert("Already logged for this day.");
-    return;
-  }
 
   const h=calculateHealth();
   const q=parseInt(questions.value||0);
   const s=calculateStudy(q);
   const percent=weightedPercentage(h,s);
 
-  data.days[key]={health:h,study:s,percentage:percent};
-  localStorage.setItem("trackerData",JSON.stringify(data));
+  await saveDay(key,{
+    health:h,
+    study:s,
+    percentage:percent,
+    timestamp:Date.now()
+  });
 
   scoreDisplay.innerText=percent+"%";
-  renderHeatmap();
 }
 
-function renderHeatmap(){
-  heatmap.innerHTML="";
-  let data=JSON.parse(localStorage.getItem("trackerData"))||{days:{}};
-  for(let i=0;i<365;i++){
-    let cell=document.createElement("div");
-    cell.classList.add("cell");
-    const d=new Date(START_DATE);
-    d.setDate(d.getDate()+i);
-    const key=formatDate(d);
-    if(data.days[key]){
-      const p=data.days[key].percentage;
-      if(p<50)cell.classList.add("low");
-      else if(p<80)cell.classList.add("mid");
-      else cell.classList.add("high");
-    }
-    heatmap.appendChild(cell);
-  }
-}
-
-function updateHeader(){
-  const now=getISTNow();
-  const day=Math.floor((now-START_DATE)/(1000*60*60*24))+1;
-  const progress=(day/365)*100;
-  dayDisplay.innerText="Day "+day+" / 365";
-  progressFill.style.width=progress+"%";
-}
-
-setInterval(updateHeader,1000);
-updateHeader();
-renderHeatmap();
 </script>
 
 </body>
-
 </html>
-
