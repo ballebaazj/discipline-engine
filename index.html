@@ -4,42 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DISCIPLINE ENGINE</title>
-
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#0b0b0b;
-  --card:#141414;
-  --border:#222;
-  --text:#e8e8e8;
+  --bg:#0a0a0a;
+  --card:#121212;
+  --border:#1f1f1f;
+  --text:#f0f0f0;
   --muted:#777;
   --accent:#e8ff47;
   --green:#47ff8c;
   --orange:#ffb347;
   --red:#ff4747;
   --mono:'IBM Plex Mono', monospace;
-  --sans:'IBM Plex Sans', sans-serif;
+  --sans:'Inter', sans-serif;
 }
 
 *{box-sizing:border-box;margin:0;padding:0}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--sans);
-  font-size:14px;
-}
+body{background:var(--bg);color:var(--text);font-family:var(--sans)}
 
 header{
   position:sticky;
   top:0;
-  z-index:100;
   background:var(--bg);
-  padding:16px 20px;
+  padding:18px 24px;
   border-bottom:1px solid var(--border);
   display:flex;
   justify-content:space-between;
   align-items:center;
+  z-index:100;
 }
 
 .logo{
@@ -48,109 +42,95 @@ header{
   color:var(--accent);
 }
 
-#mini-status{
+#mini{
   position:sticky;
-  top:60px;
+  top:68px;
   background:#101010;
   border-bottom:1px solid var(--border);
   display:flex;
   justify-content:space-between;
-  padding:8px 20px;
+  padding:10px 24px;
   font-family:var(--mono);
-  font-size:12px;
+  font-size:13px;
   z-index:90;
 }
 
 main{
   max-width:900px;
   margin:0 auto;
-  padding:20px;
+  padding:30px 20px;
 }
 
-.block{
-  margin-bottom:28px;
+.section{margin-bottom:40px}
+
+.big-metric{
+  font-family:var(--mono);
+  font-size:48px;
+  font-weight:600;
+}
+
+.sub-metric{
+  font-family:var(--mono);
+  color:var(--muted);
+  font-size:13px;
 }
 
 .card{
-  background:var(--card);
-  border:1px solid var(--border);
-  padding:20px;
+  background:linear-gradient(180deg,#141414,#101010);
+  border:1px solid rgba(255,255,255,0.04);
+  padding:22px;
+  margin-top:18px;
 }
 
-.section-title{
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:16px;
+}
+
+.label{
   font-family:var(--mono);
-  letter-spacing:.2em;
   font-size:11px;
   color:var(--muted);
-  margin-bottom:14px;
-  text-transform:uppercase;
+  margin-bottom:4px;
 }
 
-.stat-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:12px;
-}
-
-.stat{
-  background:#111;
-  border:1px solid var(--border);
-  padding:14px;
-}
-
-.stat .label{
-  font-family:var(--mono);
-  font-size:9px;
-  color:var(--muted);
-  margin-bottom:6px;
-  letter-spacing:.15em;
-}
-
-.stat .value{
+.value{
   font-family:var(--mono);
   font-size:20px;
 }
 
 .verdict{
-  display:inline-block;
   padding:6px 12px;
   border:1px solid;
   font-family:var(--mono);
   font-size:11px;
-  letter-spacing:.15em;
 }
 
 .optimal{color:var(--green);border-color:var(--green)}
 .slow{color:var(--orange);border-color:var(--orange)}
 .aggressive{color:var(--red);border-color:var(--red)}
 
-canvas{width:100%;height:200px;}
-
-input{
+input,select{
   width:100%;
-  background:#111;
+  background:#0f0f0f;
   border:1px solid var(--border);
   color:var(--text);
-  padding:8px;
+  padding:10px;
+  margin-top:8px;
   font-family:var(--mono);
-  margin-top:4px;
 }
 
 button{
   background:var(--accent);
   border:none;
-  padding:10px 18px;
+  padding:10px 16px;
   font-family:var(--mono);
+  margin-top:14px;
   cursor:pointer;
-  margin-top:10px;
 }
 
-details summary{
-  cursor:pointer;
-  font-family:var(--mono);
-  color:var(--muted);
-  margin-bottom:8px;
-}
+hr{border:none;border-top:1px solid var(--border);margin:30px 0}
 </style>
 </head>
 <body>
@@ -168,56 +148,41 @@ details summary{
   <button onclick="signOut()">SIGN OUT</button>
 </header>
 
-<div id="mini-status">
+<div id="mini">
   <div id="mini-weight">—</div>
-  <div id="mini-weekly">—</div>
-  <div id="mini-verdict">—</div>
+  <div id="mini-rate">—</div>
+  <div id="mini-phase">—</div>
 </div>
 
 <main>
 
-<!-- CURRENT STATE -->
-<section class="block card">
-  <div class="section-title">Current State</div>
-  <div class="stat-grid" id="state-stats"></div>
+<section class="section">
+  <div class="big-metric" id="display-weight">—</div>
+  <div class="sub-metric" id="display-weekly">—</div>
+  <div style="margin-top:12px" id="display-verdict"></div>
 </section>
 
-<!-- TRAJECTORY -->
-<section class="block card">
-  <div class="section-title">Weight Trend (30 Days)</div>
-  <canvas id="weight-chart"></canvas>
+<section class="section card">
+  <div class="grid" id="performance-grid"></div>
 </section>
 
-<!-- ENERGY & BEHAVIOR -->
-<section class="block card">
-  <div class="section-title">Energy & Compliance</div>
-  <div class="stat-grid" id="energy-stats"></div>
-</section>
+<section class="section card">
+  <div class="label">LOG YESTERDAY</div>
 
-<!-- TRAINING -->
-<section class="block card">
-  <div class="section-title">Training & PR</div>
-  <div id="training-stats"></div>
-</section>
-
-<!-- LOG -->
-<section class="block card">
-  <div class="section-title">Log Yesterday</div>
-  <input type="number" id="inp-weight" placeholder="Weight (kg)">
-  <input type="number" id="inp-cal" placeholder="Calories">
+  <input type="number" id="inp-weight" placeholder="Scale Weight (kg)">
+  <input type="number" id="inp-cal" placeholder="Kcal Intake">
   <input type="number" id="inp-protein" placeholder="Protein (g)">
   <input type="number" id="inp-steps" placeholder="Steps">
   <input type="number" id="inp-sleep" placeholder="Sleep (hrs)">
-  <button onclick="submitLog()">Submit</button>
-</section>
+  <input type="number" id="inp-gym" placeholder="Gym Rating (1-10)">
+  <input type="number" id="inp-burn" placeholder="Kcal Burned">
+  <select id="inp-macro">
+    <option value="">Macro/Micro Complete?</option>
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+  </select>
 
-<!-- HISTORY -->
-<section class="block card">
-  <div class="section-title">History</div>
-  <details>
-    <summary>Show Logs</summary>
-    <div id="history-list"></div>
-  </details>
+  <button onclick="submitLog()">Submit Log</button>
 </section>
 
 </main>
@@ -228,7 +193,7 @@ details summary{
 /* 🔒 FIREBASE CONFIG — UNCHANGED */
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit, serverTimestamp, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAk9apbcvCz6cHRVfkAMVpOn9t9Nv60FvE",
@@ -243,137 +208,113 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-/* ───────────────────────── STATE */
 let currentUser=null;
 let allDays=[];
-let calTarget=2150;
+let phase="CUT";
+let maintenanceEstimate=2200;
 
-/* ───────────────────────── AUTH */
-window.signInWithGoogle = async function(){
-  const provider=new GoogleAuthProvider();
-  await signInWithPopup(auth,provider);
-}
+const PHASES={
+  CUT:{deficit:450,rateMin:-0.7,rateMax:-0.3},
+  MAINTENANCE:{deficit:0,rateMin:-0.1,rateMax:0.1},
+  GAIN:{deficit:-200,rateMin:0.2,rateMax:0.5}
+};
 
-window.signOut = async function(){
-  await fbSignOut(auth);
-}
+window.signInWithGoogle=async()=>await signInWithPopup(auth,new GoogleAuthProvider());
+window.signOut=async()=>await fbSignOut(auth);
 
 onAuthStateChanged(auth,user=>{
   if(user){
     currentUser=user;
     document.getElementById("auth-screen").style.display="none";
     document.getElementById("app").style.display="block";
-    initApp();
+    init();
   }else{
     document.getElementById("auth-screen").style.display="block";
     document.getElementById("app").style.display="none";
   }
 });
 
-/* ───────────────────────── INIT */
-async function initApp(){
-  const settingsDoc=await getDoc(doc(db,'users',currentUser.uid,'settings','prefs'));
-  if(settingsDoc.exists()) calTarget=settingsDoc.data().calTarget||2150;
-
-  const q=query(collection(db,'users',currentUser.uid,'days'),orderBy('date','asc'),limit(120));
-  onSnapshot(q,snap=>{
-    allDays=snap.docs.map(d=>({id:d.id,...d.data()}));
-    refreshApp();
-  });
-}
-
-/* ───────────────────────── MODEL */
 function avg(arr,key){
   const v=arr.filter(d=>d[key]>0);
   return v.length? v.reduce((s,d)=>s+d[key],0)/v.length:null;
 }
 
-function computeDerived(){
-  if(!allDays.length) return null;
-
+function computeModel(){
   const sorted=[...allDays].sort((a,b)=>a.date.localeCompare(b.date));
+  if(sorted.length<14) return null;
+
   const last7=sorted.slice(-7);
-  const last14=sorted.slice(-14);
+  const prev7=sorted.slice(-14,-7);
 
-  const avgWeight=avg(last7,'weight');
-  const weeklyChange = (last14.length>=14)
-    ? ((avg(last7,'weight') - avg(sorted.slice(-14,-7),'weight')) / avg(sorted.slice(-14,-7),'weight')) * 100
-    : null;
+  const avgW=avg(last7,"weight");
+  const avgPrev=avg(prev7,"weight");
+  const weekly=((avgW-avgPrev)/avgPrev)*100;
 
-  const avgCal=avg(last7,'calories');
-  const deficit = avgCal? (calTarget-avgCal):null;
+  const avgCal=avg(last7,"calories");
+  const weightDelta=sorted[sorted.length-1].weight - sorted[sorted.length-14].weight;
+  maintenanceEstimate=avgCal - (weightDelta*7700/14);
 
-  let verdict="—", vClass="";
-  if(weeklyChange!==null){
-    if(weeklyChange>-0.2){ verdict="Too Slow"; vClass="slow";}
-    else if(weeklyChange>=-0.6){ verdict="Optimal"; vClass="optimal";}
-    else{ verdict="Aggressive"; vClass="aggressive";}
-  }
+  const target=maintenanceEstimate - PHASES[phase].deficit;
 
-  const compliance = last7.length
-    ? Math.round((last7.filter(d=>
-        d.calories && Math.abs(d.calories-calTarget)<=calTarget*.1 &&
-        d.protein>=130 &&
-        d.steps>=7000 &&
-        d.sleep>=7
-      ).length / last7.length)*100)
-    : null;
+  let verdict="—",vClass="";
+  if(weekly<PHASES[phase].rateMin){verdict="Too Aggressive";vClass="aggressive";}
+  else if(weekly>PHASES[phase].rateMax){verdict="Too Slow";vClass="slow";}
+  else{verdict="Optimal";vClass="optimal";}
 
-  return {
-    avgWeight,
-    weeklyChange,
-    avgCal,
-    deficit,
-    compliance,
-    verdict,
-    vClass
-  };
+  const compliance=Math.round(
+    (last7.filter(d=>
+      Math.abs(d.calories-target)<=target*.1 &&
+      d.protein>=110 &&
+      d.steps>=7000 &&
+      d.sleep>=7
+    ).length/7)*100
+  );
+
+  return {avgW,weekly,target,verdict,vClass,compliance};
 }
 
-/* ───────────────────────── RENDER */
-function refreshApp(){
-  const d=computeDerived();
-  if(!d) return;
+function render(){
+  const m=computeModel();
+  if(!m) return;
 
-  document.getElementById("mini-weight").textContent=`${d.avgWeight?.toFixed(1) || "—"} kg`;
-  document.getElementById("mini-weekly").textContent=d.weeklyChange? `${d.weeklyChange.toFixed(2)}%/wk`:"—";
-  document.getElementById("mini-verdict").innerHTML=`<span class="verdict ${d.vClass}">${d.verdict}</span>`;
+  document.getElementById("display-weight").textContent=`${m.avgW.toFixed(1)} kg`;
+  document.getElementById("display-weekly").textContent=`${m.weekly.toFixed(2)}% per week`;
+  document.getElementById("display-verdict").innerHTML=
+    `<span class="verdict ${m.vClass}">${m.verdict}</span>`;
 
-  document.getElementById("state-stats").innerHTML=`
-    <div class="stat"><div class="label">7d Avg Weight</div><div class="value">${d.avgWeight?.toFixed(1) || "—"}</div></div>
-    <div class="stat"><div class="label">Weekly %</div><div class="value">${d.weeklyChange?.toFixed(2) || "—"}%</div></div>
-    <div class="stat"><div class="label">Compliance</div><div class="value">${d.compliance || "—"}%</div></div>
+  document.getElementById("mini-weight").textContent=`${m.avgW.toFixed(1)} kg`;
+  document.getElementById("mini-rate").textContent=`${m.weekly.toFixed(2)}%`;
+  document.getElementById("mini-phase").textContent=`PHASE: ${phase}`;
+
+  document.getElementById("performance-grid").innerHTML=`
+    <div><div class="label">Target Intake</div><div class="value">${m.target.toFixed(0)} kcal</div></div>
+    <div><div class="label">Maintenance Est.</div><div class="value">${maintenanceEstimate.toFixed(0)} kcal</div></div>
+    <div><div class="label">Compliance</div><div class="value">${m.compliance}%</div></div>
   `;
-
-  document.getElementById("energy-stats").innerHTML=`
-    <div class="stat"><div class="label">Avg Calories</div><div class="value">${d.avgCal?.toFixed(0) || "—"}</div></div>
-    <div class="stat"><div class="label">Cal Target</div><div class="value">${calTarget}</div></div>
-    <div class="stat"><div class="label">Est Deficit</div><div class="value">${d.deficit || "—"}</div></div>
-  `;
-
-  renderHistory();
 }
 
-/* ───────────────────────── HISTORY */
-function renderHistory(){
-  const sorted=[...allDays].sort((a,b)=>b.date.localeCompare(a.date));
-  document.getElementById("history-list").innerHTML=
-    sorted.map(d=>`${d.date} — ${d.weight||"-"}kg<br>`).join('');
+async function init(){
+  const q=query(collection(db,"users",currentUser.uid,"days"),orderBy("date","asc"));
+  onSnapshot(q,s=>{
+    allDays=s.docs.map(d=>({id:d.id,...d.data()}));
+    render();
+  });
 }
 
-/* ───────────────────────── LOG */
 window.submitLog=async function(){
-  const date=new Date();
-  date.setDate(date.getDate()-1);
-  const prev=date.toISOString().slice(0,10);
+  const d=new Date();d.setDate(d.getDate()-1);
+  const date=d.toISOString().slice(0,10);
 
-  await setDoc(doc(db,'users',currentUser.uid,'days',prev),{
-    date:prev,
-    weight:parseFloat(inpWeight.value)||0,
-    calories:parseInt(inpCal.value)||0,
-    protein:parseInt(inpProtein.value)||0,
-    steps:parseInt(inpSteps.value)||0,
-    sleep:parseFloat(inpSleep.value)||0,
+  await setDoc(doc(db,"users",currentUser.uid,"days",date),{
+    date,
+    weight:+inpWeight.value||0,
+    calories:+inpCal.value||0,
+    protein:+inpProtein.value||0,
+    steps:+inpSteps.value||0,
+    sleep:+inpSleep.value||0,
+    gym:+inpGym.value||0,
+    burned:+inpBurn.value||0,
+    macro:inpMacro.value==="yes",
     createdAt:serverTimestamp()
   },{merge:true});
 };
