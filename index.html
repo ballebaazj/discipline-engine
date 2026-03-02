@@ -3,144 +3,184 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Discipline Dashboard</title>
+<title>APEX v3</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
+:root{
+  --bg:#0b0b12;
+  --card:#151521;
+  --accent:#00d4ff;
+  --health:#00e676;
+  --study:#ff6b35;
+  --work:#a78bfa;
+  --life:#fbbf24;
+  --danger:#ff4757;
+  --success:#00e676;
+}
+
 body{
   margin:0;
-  background:#000;
-  color:#fff;
-  font-family:'Inter',sans-serif;
+  font-family:Inter,sans-serif;
+  background:var(--bg);
+  color:white;
 }
 
 .header{
   padding:20px;
+  border-bottom:1px solid #222;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.time{
-  font-size:32px;
+.clock{
+  font-size:22px;
   font-weight:800;
 }
 
-.date{
-  opacity:0.6;
+.nav{
+  display:flex;
+  gap:15px;
 }
+
+.nav button{
+  background:none;
+  border:none;
+  color:#aaa;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.nav button.active{
+  color:var(--accent);
+}
+
+.page{ display:none; padding:20px; }
+.page.active{ display:block; }
 
 .card{
-  background:linear-gradient(145deg,#111,#1c1c1e);
-  border-radius:25px;
+  background:var(--card);
+  border-radius:20px;
   padding:20px;
-  margin:15px;
-}
-
-.card-title{
-  font-weight:600;
-  opacity:0.7;
-}
-
-.metric{
-  font-size:28px;
-  font-weight:800;
-  margin-top:8px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:15px;
-  padding:0 15px;
-}
-
-@media(max-width:700px){
-  .grid{
-    grid-template-columns:1fr;
-  }
-}
-
-input{
-  width:100%;
-  padding:10px;
-  margin-top:10px;
-  border-radius:12px;
-  border:none;
-  background:#2c2c2e;
-  color:#fff;
-}
-
-button{
-  margin-top:15px;
-  padding:10px 15px;
-  border:none;
-  border-radius:12px;
-  background:#ff2d55;
-  color:white;
-  font-weight:600;
-  cursor:pointer;
+  margin-bottom:20px;
 }
 
 .ring{
-  width:160px;
-  height:160px;
+  width:180px;
+  height:180px;
   border-radius:50%;
   margin:auto;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:22px;
+  font-size:26px;
   font-weight:800;
+}
+
+.slider-block{
+  margin-bottom:20px;
+}
+
+.slider-block label{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+  margin-bottom:6px;
+}
+
+input[type=range]{
+  width:100%;
+}
+
+textarea{
+  width:100%;
+  background:#1c1c2a;
+  border:none;
+  color:white;
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
+}
+
+button.primary{
+  background:var(--accent);
+  border:none;
+  padding:10px 16px;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+  margin-top:15px;
+}
+
+.stat-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+canvas{
+  max-width:100%;
 }
 </style>
 </head>
-
 <body>
 
 <div class="header">
-  <div class="time" id="clock">--:--:--</div>
-  <div class="date" id="dateText"></div>
+  <div>
+    <div class="clock" id="clock">--:--</div>
+    <div id="dateText"></div>
+  </div>
+  <div class="nav">
+    <button onclick="showPage('today')" id="nav-today">TODAY</button>
+    <button onclick="showPage('analytics')" id="nav-analytics">ANALYTICS</button>
+    <button onclick="showPage('settings')" id="nav-settings">SETTINGS</button>
+    <button onclick="logout()">LOGOUT</button>
+  </div>
 </div>
 
-<div class="card">
-  <div class="card-title">Activity Score</div>
-  <div class="ring" id="activityRing">0%</div>
-</div>
-
-<div class="grid">
+<!-- TODAY -->
+<div class="page active" id="page-today">
 
   <div class="card">
-    <div class="card-title">Health Score</div>
-    <div class="metric" id="healthScore">0</div>
+    <div class="ring" id="progressRing">0%</div>
+    <div style="text-align:center;margin-top:10px;">
+      Streak: <span id="streakNum">0</span> 🔥
+    </div>
   </div>
 
   <div class="card">
-    <div class="card-title">Study Score</div>
-    <div class="metric" id="studyScore">0</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">7 Day Average</div>
-    <div class="metric" id="avg7">0%</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Current Streak</div>
-    <div class="metric" id="streak">0</div>
+    <div id="sliders"></div>
+    <textarea id="notes" placeholder="Reflection..."></textarea>
+    <button class="primary" onclick="submitToday()">Lock Day</button>
   </div>
 
 </div>
 
-<div class="card">
-  <div class="card-title">Log Yesterday</div>
-  Gym <input type="checkbox" id="gym">
-  Sleep <input type="checkbox" id="sleep">
-  Questions Solved <input type="number" id="questions">
-  <button onclick="submitEntry()">Save</button>
+<!-- ANALYTICS -->
+<div class="page" id="page-analytics">
+  <div class="card">
+    <h3>Score Trend</h3>
+    <canvas id="trendChart"></canvas>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div class="page" id="page-settings">
+  <div class="card">
+    <h3>Domain Weights (must total 100)</h3>
+    <div id="weightInputs"></div>
+    <button class="primary" onclick="saveSettings()">Save</button>
+  </div>
 </div>
 
 <script type="module">
+
+// 🔥 FIREBASE CONFIG
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAk9apbcvCz6cHRVfkAMVpOn9t9Nv60FvE",
@@ -156,90 +196,193 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
-let currentUser=null;
-let allData=[];
+let user;
+let settings = { weights:{health:50,study:50,work:0,life:0} };
+let todayData = {};
+let allData = {};
 
-onAuthStateChanged(auth, async user=>{
-  if(user){
-    currentUser=user;
-    await loadData();
-    renderAnalytics();
-  } else {
+const domains = ["health","study","work","life"];
+const colors = {
+  health:"var(--health)",
+  study:"var(--study)",
+  work:"var(--work)",
+  life:"var(--life)"
+};
+
+onAuthStateChanged(auth, async (u)=>{
+  if(!u){
     await signInWithPopup(auth,provider);
+  } else {
+    user=u;
+    await loadSettings();
+    await loadAllData();
+    initUI();
   }
 });
 
-async function loadData(){
-  const snap=await getDocs(collection(db,"users",currentUser.uid,"days"));
-  allData=[];
-  snap.forEach(d=>allData.push(d.data()));
-  allData.sort((a,b)=>a.timestamp-b.timestamp);
+function todayStr(){
+  const d=new Date();
+  return d.toISOString().split("T")[0];
 }
 
-function average(arr){
-  if(!arr.length)return 0;
-  return Math.round(arr.reduce((a,b)=>a+b,0)/arr.length);
+// CLOCK
+function startClock(){
+  setInterval(()=>{
+    const now=new Date();
+    clock.innerText=now.toLocaleTimeString();
+    dateText.innerText=now.toDateString();
+  },1000);
+}
+startClock();
+
+// NAV
+window.showPage=function(p){
+  document.querySelectorAll(".page").forEach(el=>el.classList.remove("active"));
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+  document.getElementById("page-"+p).classList.add("active");
+  document.getElementById("nav-"+p)?.classList.add("active");
+  if(p==="analytics") renderChart();
 }
 
-function renderAnalytics(){
-  const scores=allData.map(d=>d.percentage);
-  const last7=scores.slice(-7);
-
-  avg7.innerText=average(last7)+"%";
-
-  let streakCount=0;
-  for(let i=scores.length-1;i>=0;i--){
-    if(scores[i]>=80) streakCount++;
-    else break;
-  }
-  streak.innerText=streakCount;
-
-  if(scores.length){
-    const latest=allData[allData.length-1];
-    healthScore.innerText=latest.health;
-    studyScore.innerText=latest.study;
-    updateRing(latest.percentage);
-  }
-}
-
-function updateRing(percent){
-  activityRing.style.background=
-  `conic-gradient(#ff2d55 ${percent*3.6}deg, #222 ${percent*3.6}deg)`;
-  activityRing.innerText=percent+"%";
-}
-
-window.submitEntry=async function(){
-  const now=new Date();
-  const y=new Date(now);
-  y.setDate(y.getDate()-1);
-  const key=y.toISOString().split("T")[0];
-
-  let h=(gym.checked?3:0)+(sleep.checked?3:0);
-  let q=parseInt(questions.value||0);
-  let s=q<20?0:q<50?2:q<80?5:q<100?8:10;
-  let percent=Math.round(((h/10)*0.5+(s/10)*0.5)*100);
-
-  await setDoc(doc(db,"users",currentUser.uid,"days",key),{
-    health:h,study:s,percentage:percent,timestamp:Date.now()
-  });
-
-  await loadData();
-  renderAnalytics();
+window.logout=function(){
+  signOut(auth);
 };
-</script>
 
-<script>
-function updateClock(){
-  const now=new Date();
-  document.getElementById("clock").innerText=
-    now.toLocaleTimeString();
-  document.getElementById("dateText").innerText=
-    now.toDateString();
+// LOAD SETTINGS
+async function loadSettings(){
+  const ref=doc(db,"users",user.uid,"settings","config");
+  const snap=await getDoc(ref);
+  if(snap.exists()) settings=snap.data();
 }
-setInterval(updateClock,1000);
-updateClock();
-</script>
 
+// LOAD ALL DATA
+async function loadAllData(){
+  const snap=await getDocs(collection(db,"users",user.uid,"days"));
+  allData={};
+  snap.forEach(d=>allData[d.id]=d.data());
+}
+
+// INIT UI
+function initUI(){
+  buildSliders();
+  buildWeightInputs();
+  loadToday();
+  renderStreak();
+}
+
+// SLIDERS
+function buildSliders(){
+  sliders.innerHTML="";
+  domains.forEach(d=>{
+    const val=todayData[d]||0;
+    sliders.innerHTML+=`
+      <div class="slider-block">
+        <label><span>${d.toUpperCase()}</span><span id="${d}-val">${val}</span></label>
+        <input type="range" min="0" max="10" value="${val}" oninput="updateSlider('${d}',this.value)">
+      </div>`;
+  });
+}
+
+window.updateSlider=function(d,v){
+  todayData[d]=Number(v);
+  document.getElementById(d+"-val").innerText=v;
+  updateRing();
+};
+
+// PROGRESS
+function calcPct(){
+  let totalWeight=0;
+  let score=0;
+  domains.forEach(d=>{
+    const w=settings.weights[d];
+    if(w>0){
+      totalWeight+=w;
+      score+=(todayData[d]||0)/10*w;
+    }
+  });
+  return totalWeight?Math.round(score/totalWeight*100):0;
+}
+
+function updateRing(){
+  const pct=calcPct();
+  progressRing.style.background=
+    `conic-gradient(var(--accent) ${pct*3.6}deg,#222 ${pct*3.6}deg)`;
+  progressRing.innerText=pct+"%";
+}
+
+// LOAD TODAY
+async function loadToday(){
+  const id=todayStr();
+  const ref=doc(db,"users",user.uid,"days",id);
+  const snap=await getDoc(ref);
+  todayData=snap.exists()?snap.data().scores||{}:{};
+  buildSliders();
+  updateRing();
+}
+
+// SUBMIT
+window.submitToday=async function(){
+  const id=todayStr();
+  const pct=calcPct();
+  await setDoc(doc(db,"users",user.uid,"days",id),{
+    scores:todayData,
+    pct:pct,
+    notes:notes.value,
+    ts:Date.now()
+  });
+  await loadAllData();
+  renderStreak();
+  alert("Day locked.");
+};
+
+// STREAK
+function renderStreak(){
+  let s=0;
+  let d=new Date();
+  while(true){
+    const id=d.toISOString().split("T")[0];
+    if(allData[id]) s++;
+    else break;
+    d.setDate(d.getDate()-1);
+  }
+  streakNum.innerText=s;
+}
+
+// CHART
+let chart;
+function renderChart(){
+  const labels=Object.keys(allData).sort();
+  const data=labels.map(k=>allData[k].pct);
+  if(chart) chart.destroy();
+  chart=new Chart(document.getElementById("trendChart"),{
+    type:"line",
+    data:{labels,datasets:[{data,borderColor:"#00d4ff"}]},
+    options:{responsive:true}
+  });
+}
+
+// SETTINGS UI
+function buildWeightInputs(){
+  weightInputs.innerHTML="";
+  domains.forEach(d=>{
+    weightInputs.innerHTML+=`
+      <div style="margin-bottom:10px;">
+        ${d.toUpperCase()}:
+        <input type="number" min="0" max="100" value="${settings.weights[d]}" onchange="updateWeight('${d}',this.value)">
+      </div>`;
+  });
+}
+
+window.updateWeight=function(d,v){
+  settings.weights[d]=Number(v);
+};
+
+window.saveSettings=async function(){
+  await setDoc(doc(db,"users",user.uid,"settings","config"),settings);
+  alert("Settings saved.");
+};
+
+</script>
 </body>
 </html>
 
