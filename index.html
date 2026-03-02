@@ -4,51 +4,69 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Discipline</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
 body{
   margin:0;
-  background:linear-gradient(180deg,#0f1115,#1b1e26);
+  background:#0f1115;
   font-family:'Inter',sans-serif;
   color:white;
 }
 
 header{
   padding:30px 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
 }
 
-header h1{
+h1{
   margin:0;
-  font-size:26px;
+  font-size:28px;
   font-weight:800;
+}
+
+.dashboard{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+  padding:20px;
+}
+
+.metric{
+  background:#1b1e26;
+  border-radius:20px;
+  padding:20px;
+}
+
+.metric .label{
+  font-size:13px;
+  opacity:0.6;
+}
+
+.metric .value{
+  font-size:32px;
+  font-weight:800;
+  margin-top:8px;
+}
+
+.container{
+  padding:20px;
+}
+
+.card{
+  background:#1b1e26;
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:20px;
 }
 
 button{
   padding:10px 16px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
   font-weight:600;
   background:#4da3ff;
   color:white;
   cursor:pointer;
-}
-
-.container{
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-}
-
-.card{
-  background:rgba(255,255,255,0.06);
-  border-radius:16px;
-  padding:20px;
 }
 
 input[type="number"]{
@@ -56,7 +74,7 @@ input[type="number"]{
   padding:10px;
   border-radius:10px;
   border:none;
-  background:rgba(255,255,255,0.1);
+  background:#2a2e38;
   color:white;
   margin-top:10px;
 }
@@ -67,47 +85,66 @@ label{
   margin:10px 0;
 }
 
-.meter{
+.heatmap{
+  display:grid;
+  grid-template-columns:repeat(30,1fr);
+  gap:4px;
   margin-top:20px;
-  font-size:26px;
-  font-weight:800;
-  text-align:center;
 }
+
+.cell{
+  aspect-ratio:1/1;
+  border-radius:4px;
+  background:#2a2e38;
+}
+
+.low{background:#3b1d1d;}
+.mid{background:#4da3ff55;}
+.high{background:#4da3ff;}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>Discipline</h1>
-  <button onclick="login()">Login</button>
+<h1>Performance</h1>
 </header>
+
+<div class="dashboard">
+  <div class="metric"><div class="label">Current Streak</div><div class="value" id="currentStreak">0</div></div>
+  <div class="metric"><div class="label">Longest Streak</div><div class="value" id="longestStreak">0</div></div>
+  <div class="metric"><div class="label">7 Day Avg</div><div class="value" id="avg7">0%</div></div>
+  <div class="metric"><div class="label">30 Day Avg</div><div class="value" id="avg30">0%</div></div>
+  <div class="metric"><div class="label">Lifetime Avg</div><div class="value" id="avgLifetime">0%</div></div>
+  <div class="metric"><div class="label">Consistency</div><div class="value" id="volatility">0</div></div>
+</div>
 
 <div class="container">
 
-  <div class="card">
-    <h2>Health</h2>
-    <label>Gym <input type="checkbox" id="gym"></label>
-    <label>Cardio <input type="checkbox" id="cardio"></label>
-    <label>5L Water <input type="checkbox" id="water"></label>
-    <label>150g Protein <input type="checkbox" id="protein"></label>
-    <label>Sleep <input type="checkbox" id="sleep"></label>
-  </div>
+<div class="card">
+<h2>Log Yesterday</h2>
 
-  <div class="card">
-    <h2>Study</h2>
-    <input type="number" id="questions" placeholder="Questions completed">
-    <button onclick="submitEntry()" style="margin-top:15px;">Submit</button>
-    <div class="meter" id="scoreDisplay">0%</div>
-  </div>
+<label>Gym <input type="checkbox" id="gym"></label>
+<label>Cardio <input type="checkbox" id="cardio"></label>
+<label>5L Water <input type="checkbox" id="water"></label>
+<label>150g Protein <input type="checkbox" id="protein"></label>
+<label>Sleep <input type="checkbox" id="sleep"></label>
+
+<input type="number" id="questions" placeholder="Questions completed">
+<button onclick="submitEntry()">Submit</button>
+</div>
+
+<div class="card">
+<h2>Year Heatmap</h2>
+<div class="heatmap" id="heatmap"></div>
+</div>
 
 </div>
 
-<!-- Firebase Module -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAk9apbcvCz6cHRVfkAMVpOn9t9Nv60FvE",
@@ -124,98 +161,100 @@ const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 
 let currentUser = null;
+let allData = [];
 
-async function login(){
-  const result = await signInWithPopup(auth, provider);
-  currentUser = result.user;
-  alert("Logged in as " + currentUser.email);
-  await loadLatestDay();
-}
-
-async function saveDay(dateKey, data){
-  if(!currentUser){
-    alert("Login first");
-    return;
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    currentUser = user;
+    await loadAllData();
+    renderAnalytics();
+    renderHeatmap();
+  } else {
+    await signInWithPopup(auth, provider);
   }
+});
 
-  await setDoc(
-    doc(db, "users", currentUser.uid, "days", dateKey),
-    data
-  );
+async function loadAllData(){
+  const querySnapshot = await getDocs(collection(db, "users", currentUser.uid, "days"));
+  allData = [];
+  querySnapshot.forEach((doc) => {
+    allData.push(doc.data());
+  });
+  allData.sort((a,b)=>a.timestamp-b.timestamp);
 }
 
-async function loadLatestDay(){
-  if(!currentUser) return;
+function average(arr){
+  if(arr.length===0) return 0;
+  return Math.round(arr.reduce((a,b)=>a+b,0)/arr.length);
+}
 
-  const now = new Date();
-  const yesterday = new Date(now);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const key = yesterday.toISOString().split("T")[0];
+function stdDev(arr){
+  const avg = average(arr);
+  const squareDiffs = arr.map(value => Math.pow(value-avg,2));
+  return Math.round(Math.sqrt(average(squareDiffs)));
+}
 
-  const snap = await getDoc(
-    doc(db, "users", currentUser.uid, "days", key)
-  );
+function renderAnalytics(){
+  const scores = allData.map(d=>d.percentage);
+  const last7 = scores.slice(-7);
+  const last30 = scores.slice(-30);
 
-  if(snap.exists()){
-    const data = snap.data();
-    document.getElementById("scoreDisplay").innerText = data.percentage + "%";
+  document.getElementById("avg7").innerText = average(last7)+"%";
+  document.getElementById("avg30").innerText = average(last30)+"%";
+  document.getElementById("avgLifetime").innerText = average(scores)+"%";
+  document.getElementById("volatility").innerText = stdDev(scores);
+
+  let streak=0, longest=0;
+  for(let s of scores){
+    if(s>=80){ streak++; longest=Math.max(longest,streak);}
+    else streak=0;
   }
+  document.getElementById("currentStreak").innerText = streak;
+  document.getElementById("longestStreak").innerText = longest;
 }
 
-window.login = login;
-window.saveDay = saveDay;
-</script>
-
-<!-- Main App Logic -->
-<script>
-
-function formatDate(d){
-  return d.toISOString().split("T")[0];
+function renderHeatmap(){
+  const heatmap=document.getElementById("heatmap");
+  heatmap.innerHTML="";
+  allData.forEach(d=>{
+    let cell=document.createElement("div");
+    cell.classList.add("cell");
+    if(d.percentage<50)cell.classList.add("low");
+    else if(d.percentage<80)cell.classList.add("mid");
+    else cell.classList.add("high");
+    heatmap.appendChild(cell);
+  });
 }
 
-function calculateHealth(){
-  let s=0;
-  if(gym.checked)s+=3;
-  if(sleep.checked)s+=3;
-  if(cardio.checked)s+=2;
-  if(protein.checked)s+=1;
-  if(water.checked)s+=1;
-  return s;
-}
-
-function calculateStudy(q){
-  if(q<20)return 0;
-  if(q<50)return 2;
-  if(q<80)return 5;
-  if(q<100)return 8;
-  return 10;
-}
-
-function weightedPercentage(h,s){
-  return Math.round(((h/10)*0.5+(s/10)*0.5)*100);
-}
-
-async function submitEntry(){
+window.submitEntry = async function(){
   const now=new Date();
   const yesterday=new Date(now);
   yesterday.setDate(yesterday.getDate()-1);
-  const key=formatDate(yesterday);
+  const key=yesterday.toISOString().split("T")[0];
 
-  const h=calculateHealth();
+  let h=0;
+  if(gym.checked)h+=3;
+  if(sleep.checked)h+=3;
+  if(cardio.checked)h+=2;
+  if(protein.checked)h+=1;
+  if(water.checked)h+=1;
+
   const q=parseInt(questions.value||0);
-  const s=calculateStudy(q);
-  const percent=weightedPercentage(h,s);
+  let s= q<20?0:q<50?2:q<80?5:q<100?8:10;
 
-  await saveDay(key,{
+  const percent=Math.round(((h/10)*0.5+(s/10)*0.5)*100);
+
+  await setDoc(doc(db,"users",currentUser.uid,"days",key),{
     health:h,
     study:s,
     percentage:percent,
     timestamp:Date.now()
   });
 
-  scoreDisplay.innerText=percent+"%";
-}
-
+  await loadAllData();
+  renderAnalytics();
+  renderHeatmap();
+};
 </script>
 
 </body>
