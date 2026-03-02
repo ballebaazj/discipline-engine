@@ -3,239 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DISCIPLINE CONTROL PANEL</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<title>Discipline Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-
-/* ===== BACKGROUND ===== */
 body{
   margin:0;
-  font-family:Roboto, sans-serif;
-  background:linear-gradient(135deg,#2b65d9,#33cc66);
-  background-size:400% 400%;
-  animation:bgShift 20s ease infinite;
-  color:#000;
-}
-
-@keyframes bgShift{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-
-/* ===== HEADER ===== */
-.header{
-  background:linear-gradient(#0055ff,#00cc66);
-  padding:15px;
-  border-bottom:4px solid #000;
-  font-family:Orbitron;
-  color:#fff;
-  text-align:center;
-}
-
-.header h1{
-  margin:0;
-  font-size:28px;
-  letter-spacing:2px;
-}
-
-.ticker{
   background:#000;
-  color:#0f0;
-  font-size:14px;
-  padding:5px;
-  overflow:hidden;
-  white-space:nowrap;
+  color:#fff;
+  font-family:'Inter',sans-serif;
 }
 
-.ticker span{
-  display:inline-block;
-  padding-left:100%;
-  animation:scroll 15s linear infinite;
+.header{
+  padding:20px;
 }
 
-@keyframes scroll{
-  0%{transform:translateX(0)}
-  100%{transform:translateX(-100%)}
+.time{
+  font-size:32px;
+  font-weight:800;
 }
 
-/* ===== LAYOUT ===== */
-.wrapper{
-  display:grid;
-  grid-template-columns:250px 1fr 300px;
-  gap:10px;
-  padding:10px;
-}
-
-/* ===== SIDEBAR ===== */
-.sidebar{
-  background:#fff;
-  border:3px solid #000;
-}
-
-.sidebar div{
-  padding:12px;
-  border-bottom:2px solid #000;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-.sidebar div:hover{
-  background:#00cc66;
-}
-
-/* ===== MAIN GRID ===== */
-.main{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-  gap:10px;
+.date{
+  opacity:0.6;
 }
 
 .card{
-  background:#fff;
-  border:3px solid #000;
+  background:linear-gradient(145deg,#111,#1c1c1e);
+  border-radius:25px;
+  padding:20px;
+  margin:15px;
 }
 
-.card-header{
-  background:linear-gradient(#3399ff,#00cc66);
-  padding:8px;
-  font-weight:bold;
-  border-bottom:2px solid #000;
+.card-title{
+  font-weight:600;
+  opacity:0.7;
 }
 
-.card-body{
-  padding:15px;
-  font-size:24px;
-  font-weight:bold;
+.metric{
+  font-size:28px;
+  font-weight:800;
+  margin-top:8px;
 }
 
-.status-good{color:#00aa00;}
-.status-mid{color:#ffaa00;}
-.status-bad{color:#cc0000;}
-
-/* ===== RIGHT PANEL ===== */
-.sidepanel{
-  background:#fff;
-  border:3px solid #000;
-  padding:10px;
-}
-
-/* ===== HEATMAP ===== */
-.heatmap{
+.grid{
   display:grid;
-  grid-template-columns:repeat(15,1fr);
-  gap:3px;
-}
-
-.cell{
-  aspect-ratio:1/1;
-  background:#ccc;
-  border:1px solid #000;
-}
-
-.low{background:#ff4444;}
-.mid{background:#ffaa00;}
-.high{background:#00cc66;}
-
-/* ===== RESPONSIVE ===== */
-@media(max-width:1000px){
-  .wrapper{
-    grid-template-columns:200px 1fr;
-  }
-  .sidepanel{display:none;}
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  padding:0 15px;
 }
 
 @media(max-width:700px){
-  .wrapper{
+  .grid{
     grid-template-columns:1fr;
   }
-  .sidebar{order:2;}
-}
-
-button{
-  padding:6px 10px;
-  border:2px solid #000;
-  background:#00cc66;
-  font-weight:bold;
-  cursor:pointer;
 }
 
 input{
-  padding:5px;
-  border:2px solid #000;
-  margin-top:5px;
   width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:12px;
+  border:none;
+  background:#2c2c2e;
+  color:#fff;
 }
 
+button{
+  margin-top:15px;
+  padding:10px 15px;
+  border:none;
+  border-radius:12px;
+  background:#ff2d55;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.ring{
+  width:160px;
+  height:160px;
+  border-radius:50%;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  font-weight:800;
+}
 </style>
 </head>
 
 <body>
 
 <div class="header">
-  <h1>DISCIPLINE CONTROL PANEL v1.0</h1>
+  <div class="time" id="clock">--:--:--</div>
+  <div class="date" id="dateText"></div>
 </div>
 
-<div class="ticker">
-  <span id="tickerText">SYSTEM ACTIVE | TRACKING PERFORMANCE | DATA STREAM ONLINE</span>
+<div class="card">
+  <div class="card-title">Activity Score</div>
+  <div class="ring" id="activityRing">0%</div>
 </div>
 
-<div class="wrapper">
+<div class="grid">
 
-  <div class="sidebar">
-    <div>DASHBOARD</div>
-    <div>MOVEMENT</div>
-    <div>ENERGY</div>
-    <div>RECOVERY</div>
-    <div>COGNITIVE</div>
-    <div>ANALYTICS</div>
+  <div class="card">
+    <div class="card-title">Health Score</div>
+    <div class="metric" id="healthScore">0</div>
   </div>
 
-  <div class="main">
-    <div class="card">
-      <div class="card-header">CURRENT STREAK</div>
-      <div class="card-body" id="currentStreak">0</div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">7 DAY AVG</div>
-      <div class="card-body" id="avg7">0%</div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">30 DAY AVG</div>
-      <div class="card-body" id="avg30">0%</div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">LIFETIME AVG</div>
-      <div class="card-body" id="avgLifetime">0%</div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">CONSISTENCY INDEX</div>
-      <div class="card-body" id="volatility">0</div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">LOG YESTERDAY</div>
-      <div class="card-body">
-        Gym <input type="checkbox" id="gym"><br>
-        Sleep <input type="checkbox" id="sleep"><br>
-        Questions <input type="number" id="questions">
-        <button onclick="submitEntry()">SUBMIT</button>
-      </div>
-    </div>
-
+  <div class="card">
+    <div class="card-title">Study Score</div>
+    <div class="metric" id="studyScore">0</div>
   </div>
 
-  <div class="sidepanel">
-    <h3>YEAR HEATMAP</h3>
-    <div class="heatmap" id="heatmap"></div>
+  <div class="card">
+    <div class="card-title">7 Day Average</div>
+    <div class="metric" id="avg7">0%</div>
   </div>
 
+  <div class="card">
+    <div class="card-title">Current Streak</div>
+    <div class="metric" id="streak">0</div>
+  </div>
+
+</div>
+
+<div class="card">
+  <div class="card-title">Log Yesterday</div>
+  Gym <input type="checkbox" id="gym">
+  Sleep <input type="checkbox" id="sleep">
+  Questions Solved <input type="number" id="questions">
+  <button onclick="submitEntry()">Save</button>
 </div>
 
 <script type="module">
@@ -263,15 +162,14 @@ let allData=[];
 onAuthStateChanged(auth, async user=>{
   if(user){
     currentUser=user;
-    await loadAllData();
+    await loadData();
     renderAnalytics();
-    renderHeatmap();
-  }else{
+  } else {
     await signInWithPopup(auth,provider);
   }
 });
 
-async function loadAllData(){
+async function loadData(){
   const snap=await getDocs(collection(db,"users",currentUser.uid,"days"));
   allData=[];
   snap.forEach(d=>allData.push(d.data()));
@@ -286,35 +184,34 @@ function average(arr){
 function renderAnalytics(){
   const scores=allData.map(d=>d.percentage);
   const last7=scores.slice(-7);
-  const last30=scores.slice(-30);
 
   avg7.innerText=average(last7)+"%";
-  avg30.innerText=average(last30)+"%";
-  avgLifetime.innerText=average(scores)+"%";
 
-  let streak=0,longest=0;
-  for(let s of scores){
-    if(s>=80){streak++;longest=Math.max(longest,streak);}
-    else streak=0;
+  let streakCount=0;
+  for(let i=scores.length-1;i>=0;i--){
+    if(scores[i]>=80) streakCount++;
+    else break;
   }
-  currentStreak.innerText=streak;
+  streak.innerText=streakCount;
+
+  if(scores.length){
+    const latest=allData[allData.length-1];
+    healthScore.innerText=latest.health;
+    studyScore.innerText=latest.study;
+    updateRing(latest.percentage);
+  }
 }
 
-function renderHeatmap(){
-  heatmap.innerHTML="";
-  allData.forEach(d=>{
-    const cell=document.createElement("div");
-    cell.classList.add("cell");
-    if(d.percentage<50)cell.classList.add("low");
-    else if(d.percentage<80)cell.classList.add("mid");
-    else cell.classList.add("high");
-    heatmap.appendChild(cell);
-  });
+function updateRing(percent){
+  activityRing.style.background=
+  `conic-gradient(#ff2d55 ${percent*3.6}deg, #222 ${percent*3.6}deg)`;
+  activityRing.innerText=percent+"%";
 }
 
 window.submitEntry=async function(){
   const now=new Date();
-  const y=new Date(now);y.setDate(y.getDate()-1);
+  const y=new Date(now);
+  y.setDate(y.getDate()-1);
   const key=y.toISOString().split("T")[0];
 
   let h=(gym.checked?3:0)+(sleep.checked?3:0);
@@ -326,11 +223,23 @@ window.submitEntry=async function(){
     health:h,study:s,percentage:percent,timestamp:Date.now()
   });
 
-  await loadAllData();
+  await loadData();
   renderAnalytics();
-  renderHeatmap();
 };
+</script>
+
+<script>
+function updateClock(){
+  const now=new Date();
+  document.getElementById("clock").innerText=
+    now.toLocaleTimeString();
+  document.getElementById("dateText").innerText=
+    now.toDateString();
+}
+setInterval(updateClock,1000);
+updateClock();
 </script>
 
 </body>
 </html>
+
