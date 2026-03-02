@@ -17,11 +17,14 @@ body{
 
 header{
   padding:30px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
 header h1{
   margin:0;
-  font-size:28px;
+  font-size:26px;
   font-weight:800;
 }
 
@@ -66,7 +69,7 @@ label{
 
 .meter{
   margin-top:20px;
-  font-size:24px;
+  font-size:26px;
   font-weight:800;
   text-align:center;
 }
@@ -77,7 +80,7 @@ label{
 
 <header>
   <h1>Discipline</h1>
-  <button onclick="login()">Login with Google</button>
+  <button onclick="login()">Login</button>
 </header>
 
 <div class="container">
@@ -100,7 +103,7 @@ label{
 
 </div>
 
-<!-- Firebase Module Script -->
+<!-- Firebase Module -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -110,7 +113,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyAk9apbcvCz6cHRVfkAMVpOn9t9Nv60FvE",
   authDomain: "discipline-engine-6cb32.firebaseapp.com",
   projectId: "discipline-engine-6cb32",
-  storageBucket: "discipline-engine-6cb32.appspot.com",
+  storageBucket: "discipline-engine-6cb32.firebasestorage.app",
   messagingSenderId: "772221095332",
   appId: "1:772221095332:web:a65d6cd7baf51613410531"
 };
@@ -126,6 +129,7 @@ async function login(){
   const result = await signInWithPopup(auth, provider);
   currentUser = result.user;
   alert("Logged in as " + currentUser.email);
+  await loadLatestDay();
 }
 
 async function saveDay(dateKey, data){
@@ -138,6 +142,24 @@ async function saveDay(dateKey, data){
     doc(db, "users", currentUser.uid, "days", dateKey),
     data
   );
+}
+
+async function loadLatestDay(){
+  if(!currentUser) return;
+
+  const now = new Date();
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const key = yesterday.toISOString().split("T")[0];
+
+  const snap = await getDoc(
+    doc(db, "users", currentUser.uid, "days", key)
+  );
+
+  if(snap.exists()){
+    const data = snap.data();
+    document.getElementById("scoreDisplay").innerText = data.percentage + "%";
+  }
 }
 
 window.login = login;
