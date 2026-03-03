@@ -3,198 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DISCIPLINE ENGINE</title>
+<title>DISCIPLINE ENGINE v2.0</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#0a0a0a;
-  --card:#121212;
-  --border:#1f1f1f;
-  --text:#f0f0f0;
-  --muted:#777;
-  --accent:#e8ff47;
-  --green:#47ff8c;
-  --orange:#ffb347;
-  --red:#ff4747;
-  --mono:'IBM Plex Mono', monospace;
-  --sans:'Inter', sans-serif;
+  --bg:#0a0a0a; --card:#121212; --border:#1f1f1f; --text:#f0f0f0;
+  --muted:#777; --accent:#e8ff47; --green:#47ff8c; --orange:#ffb347; --red:#ff4747;
+  --mono:'IBM Plex Mono', monospace; --sans:'Inter', sans-serif;
 }
-
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--sans)}
-
-header{
-  position:sticky;
-  top:0;
-  background:var(--bg);
-  padding:18px 24px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  z-index:100;
-}
-
-.logo{
-  font-family:var(--mono);
-  letter-spacing:.2em;
-  color:var(--accent);
-}
-
-#mini{
-  position:sticky;
-  top:68px;
-  background:#101010;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  justify-content:space-between;
-  padding:10px 24px;
-  font-family:var(--mono);
-  font-size:13px;
-  z-index:90;
-}
-
-main{
-  max-width:900px;
-  margin:0 auto;
-  padding:30px 20px;
-}
-
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.5}
+header{position:sticky;top:0;background:var(--bg);padding:18px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;z-index:100;}
+.logo{font-family:var(--mono);letter-spacing:.2em;color:var(--accent);font-weight:600}
+#mini{position:sticky;top:68px;background:#101010;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;padding:10px 24px;font-family:var(--mono);font-size:12px;z-index:90;}
+main{max-width:900px;margin:0 auto;padding:30px 20px;}
 .section{margin-bottom:40px}
-
-.big-metric{
-  font-family:var(--mono);
-  font-size:48px;
-  font-weight:600;
-}
-
-.sub-metric{
-  font-family:var(--mono);
-  color:var(--muted);
-  font-size:13px;
-}
-
-.card{
-  background:linear-gradient(180deg,#141414,#101010);
-  border:1px solid rgba(255,255,255,0.04);
-  padding:22px;
-  margin-top:18px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:16px;
-}
-
-.label{
-  font-family:var(--mono);
-  font-size:11px;
-  color:var(--muted);
-  margin-bottom:4px;
-}
-
-.value{
-  font-family:var(--mono);
-  font-size:20px;
-}
-
-.verdict{
-  padding:6px 12px;
-  border:1px solid;
-  font-family:var(--mono);
-  font-size:11px;
-}
-
+.big-metric{font-family:var(--mono);font-size:48px;font-weight:600;}
+.sub-metric{font-family:var(--mono);color:var(--muted);font-size:13px;margin-top:4px}
+.card{background:linear-gradient(180deg,#141414,#101010);border:1px solid rgba(255,255,255,0.04);padding:22px;margin-top:18px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;}
+.label{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase}
+.value{font-family:var(--mono);font-size:20px;}
+.verdict{padding:4px 10px;border:1px solid;font-family:var(--mono);font-size:11px;display:inline-block;margin-top:10px}
 .optimal{color:var(--green);border-color:var(--green)}
 .slow{color:var(--orange);border-color:var(--orange)}
 .aggressive{color:var(--red);border-color:var(--red)}
-
-input,select{
-  width:100%;
-  background:#0f0f0f;
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:10px;
-  margin-top:8px;
-  font-family:var(--mono);
-}
-
-button{
-  background:var(--accent);
-  border:none;
-  padding:10px 16px;
-  font-family:var(--mono);
-  margin-top:14px;
-  cursor:pointer;
-}
-
-hr{border:none;border-top:1px solid var(--border);margin:30px 0}
+.calibrating{color:var(--muted);border-color:var(--border)}
+input,select{width:100%;background:#0f0f0f;border:1px solid var(--border);color:var(--text);padding:12px;margin-top:8px;font-family:var(--mono);outline:none}
+input:focus{border-color:var(--accent)}
+button{background:var(--accent);border:none;padding:12px 20px;font-family:var(--mono);font-weight:600;margin-top:14px;cursor:pointer;transition:opacity 0.2s}
+button:hover{opacity:0.8}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);margin-top:0;padding:6px 12px;font-size:11px}
 </style>
 </head>
 <body>
 
-<div id="auth-screen">
-  <div style="height:100vh;display:flex;align-items:center;justify-content:center;">
-    <button onclick="signInWithGoogle()">CONTINUE WITH GOOGLE</button>
-  </div>
+<div id="auth-screen" style="height:100vh;display:flex;align-items:center;justify-content:center;">
+  <button onclick="signInWithGoogle()">CONTINUE WITH GOOGLE</button>
 </div>
 
 <div id="app" style="display:none">
+  <header>
+    <div class="logo">DISCIPLINE ENGINE</div>
+    <button class="btn-ghost" onclick="signOut()">SIGN OUT</button>
+  </header>
 
-<header>
-  <div class="logo">DISCIPLINE ENGINE</div>
-  <button onclick="signOut()">SIGN OUT</button>
-</header>
+  <div id="mini">
+    <div id="mini-weight">WEIGHT: —</div>
+    <div id="mini-rate">RATE: —</div>
+    <div id="mini-phase">PHASE: —</div>
+  </div>
 
-<div id="mini">
-  <div id="mini-weight">—</div>
-  <div id="mini-rate">—</div>
-  <div id="mini-phase">—</div>
-</div>
+  <main>
+    <section class="section">
+      <div class="label">Current Phase</div>
+      <select id="phase-selector" onchange="updatePhase(this.value)" style="width:auto; margin-bottom:20px;">
+        <option value="CUT">CUT (-450 kcal)</option>
+        <option value="MAINTENANCE">MAINTENANCE (0 kcal)</option>
+        <option value="GAIN">GAIN (+200 kcal)</option>
+      </select>
 
-<main>
+      <div class="big-metric" id="display-weight">—</div>
+      <div class="sub-metric" id="display-weekly">Awaiting data...</div>
+      <div id="display-verdict"></div>
+    </section>
 
-<section class="section">
-  <div class="big-metric" id="display-weight">—</div>
-  <div class="sub-metric" id="display-weekly">—</div>
-  <div style="margin-top:12px" id="display-verdict"></div>
-</section>
+    <section class="section card">
+      <div class="grid" id="performance-grid">
+        </div>
+    </section>
 
-<section class="section card">
-  <div class="grid" id="performance-grid"></div>
-</section>
-
-<section class="section card">
-  <div class="label">LOG YESTERDAY</div>
-
-  <input type="number" id="inp-weight" placeholder="Scale Weight (kg)">
-  <input type="number" id="inp-cal" placeholder="Kcal Intake">
-  <input type="number" id="inp-protein" placeholder="Protein (g)">
-  <input type="number" id="inp-steps" placeholder="Steps">
-  <input type="number" id="inp-sleep" placeholder="Sleep (hrs)">
-  <input type="number" id="inp-gym" placeholder="Gym Rating (1-10)">
-  <input type="number" id="inp-burn" placeholder="Kcal Burned">
-  <select id="inp-macro">
-    <option value="">Macro/Micro Complete?</option>
-    <option value="yes">Yes</option>
-    <option value="no">No</option>
-  </select>
-
-  <button onclick="submitLog()">Submit Log</button>
-</section>
-
-</main>
+    <section class="section card">
+      <div class="label" style="margin-bottom:15px; font-weight:600; color:var(--text)">Log Yesterday</div>
+      <div class="grid" style="grid-template-columns: 1fr 1fr;">
+        <input type="number" id="inp-weight" step="0.1" placeholder="Weight (kg)">
+        <input type="number" id="inp-cal" placeholder="Kcal Intake">
+        <input type="number" id="inp-protein" placeholder="Protein (g)">
+        <input type="number" id="inp-steps" placeholder="Steps">
+        <input type="number" id="inp-sleep" step="0.5" placeholder="Sleep (hrs)">
+        <input type="number" id="inp-gym" placeholder="Gym (1-10)">
+      </div>
+      <button onclick="submitLog()" style="width:100%">SUBMIT PERFORMANCE DATA</button>
+    </section>
+  </main>
 </div>
 
 <script type="module">
-
-/* 🔒 FIREBASE CONFIG — UNCHANGED */
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut as fbSignOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, doc, setDoc, collection, query, orderBy, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
+/* 🔒 CONFIG — Keep your existing keys here */
 const firebaseConfig = {
   apiKey: "AIzaSyAk9apbcvCz6cHRVfkAMVpOn9t9Nv60FvE",
   authDomain: "discipline-engine-6cb32.firebaseapp.com",
@@ -208,117 +108,157 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-let currentUser=null;
-let allDays=[];
-let phase="CUT";
-let maintenanceEstimate=2200;
+let currentUser = null;
+let allDays = [];
+let currentPhase = "CUT";
 
-const PHASES={
-  CUT:{deficit:450,rateMin:-0.7,rateMax:-0.3},
-  MAINTENANCE:{deficit:0,rateMin:-0.1,rateMax:0.1},
-  GAIN:{deficit:-200,rateMin:0.2,rateMax:0.5}
+const PHASES = {
+  CUT: { deficit: 450, rateMin: -0.7, rateMax: -0.3 },
+  MAINTENANCE: { deficit: 0, rateMin: -0.1, rateMax: 0.1 },
+  GAIN: { deficit: -200, rateMin: 0.2, rateMax: 0.5 }
 };
 
-window.signInWithGoogle=async()=>await signInWithPopup(auth,new GoogleAuthProvider());
-window.signOut=async()=>await fbSignOut(auth);
+// --- AUTH ---
+window.signInWithGoogle = async () => await signInWithPopup(auth, new GoogleAuthProvider());
+window.signOut = async () => await fbSignOut(auth);
 
-onAuthStateChanged(auth,user=>{
+onAuthStateChanged(auth, user => {
   if(user){
-    currentUser=user;
-    document.getElementById("auth-screen").style.display="none";
-    document.getElementById("app").style.display="block";
+    currentUser = user;
+    document.getElementById("auth-screen").style.display = "none";
+    document.getElementById("app").style.display = "block";
     init();
-  }else{
-    document.getElementById("auth-screen").style.display="block";
-    document.getElementById("app").style.display="none";
+  } else {
+    document.getElementById("auth-screen").style.display = "flex";
+    document.getElementById("app").style.display = "none";
   }
 });
 
-function avg(arr,key){
-  const v=arr.filter(d=>d[key]>0);
-  return v.length? v.reduce((s,d)=>s+d[key],0)/v.length:null;
+window.updatePhase = (val) => {
+  currentPhase = val;
+  render();
+};
+
+// --- LOGIC ---
+function getRollingAvg(arr, key, days) {
+  const subset = arr.slice(-days);
+  const values = subset.map(d => d[key]).filter(v => v > 0);
+  return values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
 }
 
-function computeModel(){
-  const sorted=[...allDays].sort((a,b)=>a.date.localeCompare(b.date));
-  if(sorted.length<14) return null;
+function computeModel() {
+  const sorted = [...allDays].sort((a, b) => a.date.localeCompare(b.date));
+  const count = sorted.length;
+  
+  if (count < 3) return { status: 'CALIBRATING', needed: 3 - count };
 
-  const last7=sorted.slice(-7);
-  const prev7=sorted.slice(-14,-7);
+  const avgW = getRollingAvg(sorted, "weight", 7);
+  const avgWPrev = getRollingAvg(sorted.slice(0, -7), "weight", 7);
+  
+  let weeklyRate = null;
+  if (avgW && avgWPrev) {
+    weeklyRate = ((avgW - avgWPrev) / avgWPrev) * 100;
+  }
 
-  const avgW=avg(last7,"weight");
-  const avgPrev=avg(prev7,"weight");
-  const weekly=((avgW-avgPrev)/avgPrev)*100;
+  // Maintenance Math (Requires at least 14 days for accuracy)
+  let maintenance = 2500; // Baseline default
+  if (count >= 14) {
+    const avgCal = getRollingAvg(sorted, "calories", 14);
+    const weightDelta = sorted[count-1].weight - sorted[count-14].weight;
+    maintenance = avgCal - (weightDelta * 7700 / 14);
+  }
 
-  const avgCal=avg(last7,"calories");
-  const weightDelta=sorted[sorted.length-1].weight - sorted[sorted.length-14].weight;
-  maintenanceEstimate=avgCal - (weightDelta*7700/14);
+  const target = maintenance - PHASES[currentPhase].deficit;
 
-  const target=maintenanceEstimate - PHASES[phase].deficit;
+  // Verdict Logic
+  let verdict = "CALIBRATING", vClass = "calibrating";
+  if (weeklyRate !== null) {
+    const p = PHASES[currentPhase];
+    if (weeklyRate < p.rateMin) { verdict = "TOO AGGRESSIVE"; vClass = "aggressive"; }
+    else if (weeklyRate > p.rateMax) { verdict = "TOO SLOW"; vClass = "slow"; }
+    else { verdict = "OPTIMAL"; vClass = "optimal"; }
+  }
 
-  let verdict="—",vClass="";
-  if(weekly<PHASES[phase].rateMin){verdict="Too Aggressive";vClass="aggressive";}
-  else if(weekly>PHASES[phase].rateMax){verdict="Too Slow";vClass="slow";}
-  else{verdict="Optimal";vClass="optimal";}
-
-  const compliance=Math.round(
-    (last7.filter(d=>
-      Math.abs(d.calories-target)<=target*.1 &&
-      d.protein>=110 &&
-      d.steps>=7000 &&
-      d.sleep>=7
-    ).length/7)*100
+  // Compliance (Last 7 days)
+  const last7 = sorted.slice(-7);
+  const compliance = Math.round(
+    (last7.filter(d => 
+      Math.abs(d.calories - target) <= target * 0.15 && // 15% margin
+      d.protein >= 110
+    ).length / last7.length) * 100
   );
 
-  return {avgW,weekly,target,verdict,vClass,compliance};
+  return { avgW, weeklyRate, target, maintenance, verdict, vClass, compliance, count };
 }
 
-function render(){
-  const m=computeModel();
-  if(!m) return;
+// --- UI ---
+function render() {
+  const m = computeModel();
+  const els = {
+    weight: document.getElementById("display-weight"),
+    weekly: document.getElementById("display-weekly"),
+    verdict: document.getElementById("display-verdict"),
+    grid: document.getElementById("performance-grid"),
+    miniW: document.getElementById("mini-weight"),
+    miniR: document.getElementById("mini-rate"),
+    miniP: document.getElementById("mini-phase")
+  };
 
-  document.getElementById("display-weight").textContent=`${m.avgW.toFixed(1)} kg`;
-  document.getElementById("display-weekly").textContent=`${m.weekly.toFixed(2)}% per week`;
-  document.getElementById("display-verdict").innerHTML=
-    `<span class="verdict ${m.vClass}">${m.verdict}</span>`;
+  if (m.status === 'CALIBRATING') {
+    els.weight.textContent = "CALIBRATING...";
+    els.weekly.textContent = `Log ${m.needed} more days to begin engine analysis.`;
+    return;
+  }
 
-  document.getElementById("mini-weight").textContent=`${m.avgW.toFixed(1)} kg`;
-  document.getElementById("mini-rate").textContent=`${m.weekly.toFixed(2)}%`;
-  document.getElementById("mini-phase").textContent=`PHASE: ${phase}`;
+  els.weight.textContent = `${m.avgW.toFixed(1)} kg`;
+  els.weekly.textContent = m.weeklyRate ? `${m.weeklyRate.toFixed(2)}% Δ / WEEK` : "Calculating rate...";
+  els.verdict.innerHTML = `<span class="verdict ${m.vClass}">${m.verdict}</span>`;
 
-  document.getElementById("performance-grid").innerHTML=`
-    <div><div class="label">Target Intake</div><div class="value">${m.target.toFixed(0)} kcal</div></div>
-    <div><div class="label">Maintenance Est.</div><div class="value">${maintenanceEstimate.toFixed(0)} kcal</div></div>
+  els.miniW.textContent = `W: ${m.avgW.toFixed(1)}kg`;
+  els.miniR.textContent = `R: ${m.weeklyRate ? m.weeklyRate.toFixed(1) : '—'}%`;
+  els.miniP.textContent = `PHASE: ${currentPhase}`;
+
+  els.grid.innerHTML = `
+    <div><div class="label">Target Intake</div><div class="value">${m.target.toFixed(0)}</div></div>
+    <div><div class="label">Maint. Est</div><div class="value">${m.maintenance.toFixed(0)}</div></div>
     <div><div class="label">Compliance</div><div class="value">${m.compliance}%</div></div>
+    <div><div class="label">Days Logged</div><div class="value">${m.count}</div></div>
   `;
 }
 
-async function init(){
-  const q=query(collection(db,"users",currentUser.uid,"days"),orderBy("date","asc"));
-  onSnapshot(q,s=>{
-    allDays=s.docs.map(d=>({id:d.id,...d.data()}));
+async function init() {
+  const q = query(collection(db, "users", currentUser.uid, "days"), orderBy("date", "asc"));
+  onSnapshot(q, s => {
+    allDays = s.docs.map(d => ({ id: d.id, ...d.data() }));
     render();
   });
 }
 
-window.submitLog=async function(){
-  const d=new Date();d.setDate(d.getDate()-1);
-  const date=d.toISOString().slice(0,10);
+window.submitLog = async function() {
+  // Fix: Use Local Date string to avoid UTC offset jumping days
+  const d = new Date(); d.setDate(d.getDate() - 1);
+  const dateStr = d.toLocaleDateString('en-CA'); // YYYY-MM-DD
 
-  await setDoc(doc(db,"users",currentUser.uid,"days",date),{
-    date,
-    weight:+inpWeight.value||0,
-    calories:+inpCal.value||0,
-    protein:+inpProtein.value||0,
-    steps:+inpSteps.value||0,
-    sleep:+inpSleep.value||0,
-    gym:+inpGym.value||0,
-    burned:+inpBurn.value||0,
-    macro:inpMacro.value==="yes",
-    createdAt:serverTimestamp()
-  },{merge:true});
+  const data = {
+    date: dateStr,
+    weight: parseFloat(document.getElementById("inp-weight").value) || 0,
+    calories: parseInt(document.getElementById("inp-cal").value) || 0,
+    protein: parseInt(document.getElementById("inp-protein").value) || 0,
+    steps: parseInt(document.getElementById("inp-steps").value) || 0,
+    sleep: parseFloat(document.getElementById("inp-sleep").value) || 0,
+    gym: parseInt(document.getElementById("inp-gym").value) || 0,
+    createdAt: serverTimestamp()
+  };
+
+  if (!data.weight || !data.calories) return alert("Weight and Calories are required.");
+
+  try {
+    await setDoc(doc(db, "users", currentUser.uid, "days", dateStr), data, { merge: true });
+    alert("Data logged for " + dateStr);
+  } catch (e) {
+    console.error(e);
+  }
 };
-
 </script>
 </body>
 </html>
