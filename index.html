@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Command | Discipline Engine</title>
+<title>Protocol | Discipline Engine</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -13,32 +13,27 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding-bottom: 40px; }
 
-/* --- HUD --- */
 header {
     position: sticky; top: 0; z-index: 1000;
     background: rgba(0,0,0,0.85); backdrop-filter: blur(20px);
     padding: 20px; border-bottom: 0.5px solid #333;
 }
 .header-top { display: flex; justify-content: space-between; align-items: flex-end; }
-h1 { font-size: 32px; font-weight: 700; letter-spacing: -1px; }
+h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
 #ist-clock { font-family: 'IBM Plex Mono'; color: var(--accent); font-size: 13px; }
 
-/* --- LAYOUT --- */
 .container { padding: 15px; max-width: 500px; margin: 0 auto; }
-.section-label { font-size: 18px; font-weight: 700; margin: 25px 0 12px 5px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.section-title { font-size: 14px; font-weight: 700; margin: 25px 0 10px 5px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 
-/* --- CARDS --- */
 .card { background: var(--card); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
 .val { font-size: 24px; font-weight: 700; }
 .sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
 
-/* --- WATER TRACKER --- */
 .water-ctrl { display: flex; justify-content: space-between; align-items: center; background: #2c2c2e; border-radius: 10px; padding: 10px; margin-top: 10px; }
-.w-btn { background: #3a3a3c; border: none; color: white; width: 40px; height: 40px; border-radius: 8px; font-size: 20px; font-weight: bold; }
+.w-btn { background: #3a3a3c; border: none; color: white; width: 44px; height: 44px; border-radius: 10px; font-size: 20px; }
 
-/* --- INPUTS --- */
 input, select { 
     width: 100%; background: #2c2c2e; border: none; border-radius: 10px; 
     padding: 14px; color: white; font-size: 16px; margin-top: 5px; outline: none;
@@ -47,22 +42,18 @@ input, select {
     width: 100%; background: var(--accent); color: white; border: none;
     padding: 18px; border-radius: 14px; font-weight: 700; font-size: 17px; margin-top: 15px;
 }
-.locked-box { border: 1px solid var(--green); color: var(--green); text-align: center; padding: 20px; border-radius: 14px; }
+.locked-box { border: 1px solid var(--green); color: var(--green); text-align: center; padding: 20px; border-radius: 14px; font-weight: 600; }
 
-/* --- CHART --- */
-.mini-chart { display: flex; align-items: flex-end; gap: 3px; height: 40px; margin-top: 10px; }
-.bar { background: #3a3a3c; flex: 1; border-radius: 1px; }
+.mini-chart { display: flex; align-items: flex-end; gap: 4px; height: 40px; margin-top: 10px; }
+.bar { background: #3a3a3c; flex: 1; border-radius: 2px; }
 .bar.active { background: var(--accent); }
-
-.backup-row { display: flex; gap: 10px; margin-top: 20px; }
-.btn-outline { background: none; border: 1px solid #333; color: var(--muted); padding: 8px; border-radius: 8px; font-size: 11px; flex: 1; }
 </style>
 </head>
 <body>
 
 <header>
     <div class="header-top">
-        <h1>Command</h1>
+        <h1>Protocol HUD</h1>
         <div id="ist-clock">00:00:00 IST</div>
     </div>
     <div style="font-size: 13px; color: var(--muted); margin-top: 4px;">Tuesday, 3 March 2026</div>
@@ -70,48 +61,48 @@ input, select {
 
 <div class="container">
     
-    <div class="section-label">Metabolic Brain</div>
+    <div class="section-title">Metabolic Analysis</div>
     <div class="card">
         <div class="grid-2">
             <div>
-                <div class="label">True TDEE</div>
+                <div class="label">Avg TDEE (7D)</div>
                 <div class="val" id="val-tdee">----</div>
-                <div class="sub">Adaptive Baseline</div>
+                <div class="sub">Current Expenditure</div>
             </div>
             <div>
                 <div class="label">30D Forecast</div>
                 <div class="val" id="val-pred">--.-</div>
-                <div class="sub" id="val-pred-sub">kg predicted</div>
+                <div class="sub" id="val-pred-sub">Target Goal</div>
             </div>
         </div>
     </div>
 
-    <div class="section-label">Summary Overview</div>
+    <div class="section-title">Biometric Summary</div>
     <div class="grid-2">
         <div class="card">
-            <div class="label" style="color:var(--accent)">Weight (7D)</div>
+            <div class="label" style="color:var(--accent)">7D Avg Weight</div>
             <div class="val" id="val-w">0.0</div>
             <div class="mini-chart" id="chart-w"></div>
         </div>
         <div class="card">
             <div class="label" style="color:var(--blue)">Compliance</div>
             <div class="val" id="val-comp">0%</div>
-            <div class="sub">Streak: <span id="val-streak">0</span> days</div>
+            <div class="sub">Streak: <span id="val-streak">0</span> Days</div>
         </div>
     </div>
 
     <div class="card">
-        <div class="label" style="color:var(--blue)">💧 Hydration Level</div>
+        <div class="label" style="color:var(--blue)">💧 Daily Hydration</div>
         <div class="val"><span id="val-water">0.0</span> <span style="font-size:16px; font-weight:400; color:var(--muted)">Liters</span></div>
         <div class="water-ctrl">
             <button class="w-btn" onclick="updateWater(-0.25)">-</button>
-            <span style="font-size:12px; color:var(--muted)">+/- 250ml</span>
+            <span style="font-size:12px; color:var(--muted)">250ml Increments</span>
             <button class="w-btn" onclick="updateWater(0.25)">+</button>
         </div>
     </div>
 
-    <div class="section-label">Log: March 2</div>
-    <div class="card" id="input-card">
+    <div class="section-title">Log: Monday, March 2</div>
+    <div class="card">
         <div id="form-ui">
             <div class="grid-2">
                 <div>
@@ -125,39 +116,35 @@ input, select {
             </div>
             <div class="grid-2" style="margin-top:10px">
                 <div>
-                    <label>Steps</label>
+                    <label>Daily Steps</label>
                     <input type="number" id="in-s" placeholder="10000">
                 </div>
                 <div>
-                    <label>Gym RPE (1-10)</label>
+                    <label>Gym RPE</label>
                     <select id="in-rpe">
-                        <option value="0">Rest Day</option>
-                        <option value="6">Light (6)</option>
-                        <option value="8">Target (8)</option>
-                        <option value="10">Max (10)</option>
+                        <option value="0">Rest / Recovery</option>
+                        <option value="7">Moderate (7)</option>
+                        <option value="9">High Intensity (9)</option>
                     </select>
                 </div>
             </div>
-            <button class="btn-main" onclick="executeLog()">Save Performance</button>
+            <button class="btn-main" onclick="executeLog()">Commit to Protocol</button>
         </div>
         <div id="locked-ui" style="display:none" class="locked-box">
-            PROTOCOL SEALED: March 2 Finalized
+            ✓ MARCH 2 PROTOCOL SEALED
         </div>
     </div>
 
-    <div class="backup-row">
-        <button class="btn-outline" onclick="exportData()">Export Backup (JSON)</button>
-        <button class="btn-outline" onclick="window.scrollTo(0,0)">Back to Top</button>
-    </div>
+    <button class="btn-main" style="background:#333; margin-top:20px;" onclick="exportData()">Export Data Backup</button>
 
 </div>
 
 <script>
 const YESTERDAY = "2026-03-02";
 
-// --- SEEDED DATA (Feb 21 - March 1) ---
+// --- CORRECTED SEED DATA (Feb 21 - March 1) ---
 let db = JSON.parse(localStorage.getItem('engine_v5_final')) || [
-    {date: "2026-02-21", w: 82.5, c: 2400, s: 8000, rpe: 8, water: 3},
+    {date: "2026-02-21", w: 82.5, c: 2400, s: 8000, rpe: 9, water: 3},
     {date: "2026-02-22", w: 82.3, c: 2300, s: 7500, rpe: 0, water: 2.5},
     {date: "2026-02-23", w: 82.4, c: 2500, s: 11000, rpe: 9, water: 3.5},
     {date: "2026-02-24", w: 82.1, c: 2200, s: 10000, rpe: 7, water: 3},
@@ -168,65 +155,55 @@ let db = JSON.parse(localStorage.getItem('engine_v5_final')) || [
     {date: "2026-03-01", w: 81.1, c: 2000, s: 11000, rpe: 9, water: 3.5}
 ];
 
-// --- CLOCK ---
 function updateClock() {
     const ist = new Date(new Date().getTime() + (new Date().getTimezoneOffset() * 60000) + (5.5 * 3600000));
     document.getElementById('ist-clock').textContent = ist.toTimeString().split(' ')[0] + " IST";
 }
 setInterval(updateClock, 1000); updateClock();
 
-// --- CORE LOGIC ---
 function render() {
     const sorted = [...db].sort((a,b) => a.date.localeCompare(b.date));
-    const loggedYesterday = sorted.some(d => d.date === YESTERDAY);
-    const yesterdayEntry = sorted.find(d => d.date === YESTERDAY) || { water: 0 };
+    const yesterdayEntry = sorted.find(d => d.date === YESTERDAY);
 
-    if(loggedYesterday) {
+    if(yesterdayEntry && yesterdayEntry.w > 0) {
         document.getElementById('form-ui').style.display = 'none';
         document.getElementById('locked-ui').style.display = 'block';
     }
 
-    // Adaptive TDEE (True TDEE)
+    // ROLLING 7-DAY CALCULATIONS
     const last7 = sorted.slice(-7);
     const avgW = last7.reduce((s,d) => s + d.w, 0) / last7.length;
     const avgC = last7.reduce((s,d) => s + d.c, 0) / last7.length;
-    const weightDelta = sorted[sorted.length-1].w - sorted[0].w;
-    const daysElapsed = (new Date(sorted[sorted.length-1].date) - new Date(sorted[0].date)) / 86400000;
-    const trueTDEE = avgC - ((weightDelta * 7700) / daysElapsed);
 
-    // 30D Forecast
+    // Rolling TDEE Calculation: (Avg Calories - (Weekly Weight Delta * 1100))
+    const weightDelta = last7[last7.length-1].w - last7[0].w;
+    const daysInDelta = (new Date(last7[last7.length-1].date) - new Date(last7[0].date)) / 86400000;
+    const trueTDEE = avgC - ((weightDelta * 7700) / (daysInDelta || 1));
+
+    // Forecast
     const weeklyDeficit = (trueTDEE - avgC) * 7;
-    const predictedLoss = (weeklyDeficit / 7700) * 4.2; // 4.2 weeks in a month
-    const forecast = sorted[sorted.length-1].w - predictedLoss;
+    const forecast = sorted[sorted.length-1].w - ((weeklyDeficit / 7700) * 4.2);
 
-    // UI Updates
     document.getElementById('val-tdee').textContent = Math.round(trueTDEE);
     document.getElementById('val-pred').textContent = forecast.toFixed(1);
-    document.getElementById('val-pred-sub').textContent = `Est. weight by April 3`;
     document.getElementById('val-w').textContent = avgW.toFixed(1);
-    document.getElementById('val-water').textContent = yesterdayEntry.water.toFixed(2);
-
-    // Compliance & Streak
+    document.getElementById('val-water').textContent = (yesterdayEntry ? yesterdayEntry.water : 0).toFixed(2);
     document.getElementById('val-comp').textContent = Math.round((sorted.length / 10) * 100) + "%";
     document.getElementById('val-streak').textContent = sorted.length;
 
-    // Chart
     const chart = document.getElementById('chart-w');
     chart.innerHTML = '';
     last7.forEach((d, i) => {
         const bar = document.createElement('div');
         bar.className = `bar ${i === last7.length-1 ? 'active' : ''}`;
-        bar.style.height = ((d.w - 70) * 3) + 'px';
+        bar.style.height = Math.max(5, (d.w - 75) * 5) + 'px';
         chart.appendChild(bar);
     });
 }
 
 window.updateWater = function(amt) {
     let entry = db.find(d => d.date === YESTERDAY);
-    if(!entry) {
-        entry = { date: YESTERDAY, w: 0, c: 0, s: 0, rpe: 0, water: 0 };
-        db.push(entry);
-    }
+    if(!entry) { entry = { date: YESTERDAY, w: 0, c: 0, s: 0, rpe: 0, water: 0 }; db.push(entry); }
     entry.water = Math.max(0, entry.water + amt);
     localStorage.setItem('engine_v5_final', JSON.stringify(db));
     render();
@@ -235,16 +212,14 @@ window.updateWater = function(amt) {
 window.executeLog = function() {
     const w = parseFloat(document.getElementById('in-w').value);
     const c = parseInt(document.getElementById('in-c').value);
-    const s = parseInt(document.getElementById('in-s').value);
-    const rpe = parseInt(document.getElementById('in-rpe').value);
-
-    if(!w || !c) return alert("Biometric failure: Fill all fields.");
-
+    if(!w || !c) return alert("Error: Weight and Calories required.");
     let entry = db.find(d => d.date === YESTERDAY);
-    if(entry) {
-        entry.w = w; entry.c = c; entry.s = s; entry.rpe = rpe;
+    if(entry) { 
+        entry.w = w; entry.c = c; 
+        entry.s = parseInt(document.getElementById('in-s').value) || 0;
+        entry.rpe = parseInt(document.getElementById('in-rpe').value) || 0;
     } else {
-        db.push({date: YESTERDAY, w, c, s, rpe, water: 0});
+        db.push({date: YESTERDAY, w, c, s: 10000, rpe: 8, water: 0});
     }
     localStorage.setItem('engine_v5_final', JSON.stringify(db));
     render();
@@ -252,10 +227,8 @@ window.executeLog = function() {
 
 window.exportData = function() {
     const blob = new Blob([JSON.stringify(db, null, 2)], {type: 'application/json'});
-    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `discipline_engine_backup_${YESTERDAY}.json`;
-    a.click();
+    a.href = URL.createObjectURL(blob); a.download = `engine_backup.json`; a.click();
 };
 
 render();
