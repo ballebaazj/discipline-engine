@@ -1,219 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Protocol v7.5 | 10% BF</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-<style>
-:root {
-    --bg: #000; --card: #1c1c1e; --accent: #ff3b30; --blue: #0a84ff;
-    --green: #34c759; --text: #fff; --muted: #8e8e93;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding-bottom: 50px; }
-
-header {
-    position: sticky; top: 0; z-index: 1000;
-    background: rgba(0,0,0,0.85); backdrop-filter: blur(20px);
-    padding: 20px; border-bottom: 0.5px solid #333;
-}
-.header-top { display: flex; justify-content: space-between; align-items: flex-end; }
-h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
-#ist-clock { font-family: 'IBM Plex Mono'; color: var(--accent); font-size: 13px; }
-
-.container { padding: 15px; max-width: 500px; margin: 0 auto; }
-.section-title { font-size: 11px; font-weight: 700; margin: 25px 0 10px 5px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
-
-.card { background: var(--card); border-radius: 16px; padding: 18px; margin-bottom: 12px; border: 1px solid #2c2c2e; }
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.val { font-size: 24px; font-weight: 700; }
-.label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
-.sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
-
-input, select, textarea { 
-    width: 100%; background: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 12px; 
-    padding: 12px; color: white; font-size: 16px; margin-top: 5px; outline: none; font-family: inherit;
-}
-textarea { height: 60px; resize: none; font-size: 14px; }
-.btn-main {
-    width: 100%; background: var(--text); color: var(--bg); border: none;
-    padding: 18px; border-radius: 16px; font-weight: 700; font-size: 16px; margin-top: 15px;
-}
-.locked-box { background: rgba(52, 199, 89, 0.1); border: 1px solid var(--green); color: var(--green); text-align: center; padding: 20px; border-radius: 16px; font-weight: 700; }
-
-details { background: var(--card); border-radius: 12px; margin-bottom: 8px; border: 1px solid #2c2c2e; }
-summary { padding: 15px; font-size: 14px; font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
-.history-content { padding: 10px 15px 15px; font-size: 13px; color: #d1d1d6; border-top: 0.5px solid #333; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Protocol v8.0 | 70kg @ 10%</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
+    <style>
+        :root { --bg: #000; --card: #1c1c1e; --accent: #ff3b30; --blue: #0a84ff; --green: #34c759; --text: #fff; --muted: #8e8e93; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding-bottom: 50px; }
+        header { position: sticky; top: 0; z-index: 1000; background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); padding: 20px; border-bottom: 0.5px solid #333; display: flex; justify-content: space-between; align-items: flex-end; }
+        h1 { font-size: 22px; font-weight: 700; }
+        #ist-clock { font-family: 'IBM Plex Mono'; color: var(--accent); font-size: 13px; }
+        .container { padding: 15px; max-width: 500px; margin: 0 auto; }
+        .section-title { font-size: 11px; font-weight: 700; margin: 25px 0 10px 5px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
+        .card { background: var(--card); border-radius: 16px; padding: 18px; margin-bottom: 12px; border: 1px solid #2c2c2e; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .val { font-size: 22px; font-weight: 700; }
+        .label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+        .sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+        input, select, textarea { width: 100%; background: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 12px; padding: 12px; color: white; font-size: 16px; margin-top: 5px; outline: none; font-family: inherit; }
+        textarea { height: 70px; }
+        .btn-main { width: 100%; background: var(--text); color: var(--bg); border: none; padding: 18px; border-radius: 16px; font-weight: 700; font-size: 16px; margin-top: 15px; cursor: pointer; }
+        .status-bar { padding: 10px; text-align: center; border-radius: 8px; font-weight: 800; font-size: 12px; margin-bottom: 15px; }
+        details { background: var(--card); border-radius: 12px; margin-bottom: 8px; border: 1px solid #2c2c2e; }
+        summary { padding: 15px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; }
+        .history-content { padding: 10px 15px 15px; font-size: 13px; color: #d1d1d6; border-top: 0.5px solid #333; }
+    </style>
 </head>
 <body>
 
 <header>
-    <div class="header-top">
-        <h1>Protocol HUD</h1>
-        <div id="ist-clock">00:00:00 IST</div>
+    <div>
+        <h1>Protocol v8.0</h1>
+        <div style="font-size: 11px; color: var(--muted)">User: 168cm Male</div>
     </div>
+    <div id="ist-clock">00:00:00 IST</div>
 </header>
 
 <div class="container">
-    
-    <div class="section-title">Objective: 65kg @ 10% BF</div>
+    <div id="status-display" class="status-bar" style="background: rgba(255, 59, 48, 0.1); color: var(--accent);">INITIALIZING ENGINE...</div>
+
+    <div class="section-title">Metabolic Outlook</div>
     <div class="card" style="border-left: 4px solid var(--blue);">
         <div class="grid-2">
-            <div>
-                <div class="label">Est. Body Fat</div>
-                <div class="val" id="val-bf">--.-%</div>
-                <div class="sub">Current State</div>
-            </div>
-            <div>
-                <div class="label">Days to Goal</div>
-                <div class="val" id="val-days">--</div>
-                <div class="sub" id="val-eta">Waiting for Deficit...</div>
-            </div>
+            <div><div class="label">True BF%</div><div class="val" id="val-bf">--.-%</div><div class="sub">Navy Method</div></div>
+            <div><div class="label">Goal ETA</div><div class="val" id="val-eta-days">--</div><div class="sub" id="val-eta-date">Pending Deficit</div></div>
         </div>
     </div>
 
-    <div class="section-title">Biological Momentum</div>
     <div class="grid-2">
-        <div class="card">
-            <div class="label">True TDEE</div>
-            <div class="val" id="val-tdee">----</div>
-            <div class="sub">7D Burn Rate</div>
-        </div>
-        <div class="card">
-            <div class="label" style="color:var(--accent)">Avg Weight</div>
-            <div class="val" id="val-w">0.0</div>
-            <div class="sub">kg (Rolling)</div>
-        </div>
+        <div class="card"><div class="label">True TDEE</div><div class="val" id="val-tdee">----</div><div class="sub">7D Burn Rate</div></div>
+        <div class="card"><div class="label">Lat Strength</div><div class="val" id="val-lat">--</div><div class="sub">Last kg</div></div>
     </div>
 
-    <div class="section-title">Log Submission: March 2</div>
-    <div class="card">
+    <div class="section-title">Submit Entry: March 2</div>
+    <div class="card" id="input-card">
         <div id="form-ui">
             <div class="grid-2">
                 <div><label>Weight (kg)</label><input type="number" id="in-w" step="0.1" placeholder="71.0"></div>
-                <div><label>Intake (kcal)</label><input type="number" id="in-c" placeholder="2000"></div>
+                <div><label>Intake (kcal)</label><input type="number" id="in-c" placeholder="1800"></div>
             </div>
             <div class="grid-2" style="margin-top:10px">
-                <div><label>Waist (cm)</label><input type="number" id="in-waist" placeholder="80"></div>
+                <div><label>Waist (cm)</label><input type="number" id="in-waist" placeholder="88"></div>
                 <div><label>Neck (cm)</label><input type="number" id="in-neck" placeholder="38"></div>
             </div>
             <div style="margin-top:10px">
-                <label>Strategic Notes</label>
-                <textarea id="in-notes" placeholder="Effort, mood, hunger..."></textarea>
+                <label>Lat Pulldown (kg)</label>
+                <input type="number" id="in-lat" placeholder="60">
             </div>
-            <button class="btn-main" onclick="executeLog()">Seal Daily Protocol</button>
+            <div style="margin-top:10px">
+                <label>Strategic Notes</label>
+                <textarea id="in-notes" placeholder="Energy levels, sleep, specific hunger..."></textarea>
+            </div>
+            <button class="btn-main" onclick="executeLog()">Seal Protocol Entry</button>
         </div>
-        <div id="locked-ui" style="display:none" class="locked-box">✓ MARCH 2 PROTOCOL SEALED</div>
+        <div id="locked-ui" style="display:none; text-align:center; padding:20px; color:var(--green); font-weight:700;">✓ LOG SEALED FOR MARCH 2</div>
     </div>
 
-    <div class="section-title">Protocol Archive</div>
+    <div class="section-title">Historical Archive</div>
     <div id="history-container"></div>
-
-    <button class="btn-main" style="background:#1c1c1e; color:#fff; border: 1px solid #333;" onclick="exportData()">Export Data</button>
 </div>
 
 <script>
+const HEIGHT = 168;
+const GOAL_W = 70.0;
+const GOAL_BF = 10.0;
 const YESTERDAY = "2026-03-02";
-const GOAL_W = 65.0;
-const HEIGHT = 175; // Set your height in cm here
 
-let db = JSON.parse(localStorage.getItem('engine_v75_db')) || [
-    {date: "2026-02-21", w: 72.2, c: 2200, waist: 82, neck: 38, notes: "Start", ts: "08:15 AM"},
-    {date: "2026-02-22", w: 72.0, c: 2100, waist: 82, neck: 38, notes: "Rest", ts: "07:30 AM"},
-    {date: "2026-02-23", w: 72.1, c: 2300, waist: 81.5, neck: 38, notes: "Heavy Lift", ts: "08:00 AM"},
-    {date: "2026-02-24", w: 71.8, c: 2000, waist: 81, neck: 38, notes: "Feeling lean", ts: "07:45 AM"},
-    {date: "2026-02-25", w: 71.6, c: 2100, waist: 81, neck: 38, notes: "Mid-week", ts: "09:00 AM"},
-    {date: "2026-02-26", w: 71.7, c: 2200, waist: 81, neck: 38, notes: "Steps high", ts: "07:20 AM"},
-    {date: "2026-02-27", w: 71.4, c: 2000, waist: 80.5, neck: 38, notes: "Steady", ts: "08:10 AM"},
-    {date: "2026-02-28", w: 71.3, c: 2100, waist: 80, neck: 38, notes: "Weekend", ts: "08:45 AM"},
-    {date: "2026-03-01", w: 71.2, c: 1900, waist: 80, neck: 38, notes: "Pushing", ts: "07:55 AM"}
+let db = JSON.parse(localStorage.getItem('engine_v8_db')) || [
+    {date: "2026-02-21", w: 71.5, c: 2000, waist: 89, neck: 38, lat: 55, notes: "Baseline"},
+    {date: "2026-02-25", w: 71.2, c: 1900, waist: 88.5, neck: 38, lat: 57, notes: "Strength up"},
+    {date: "2026-03-01", w: 71.0, c: 1800, waist: 88, neck: 38, lat: 60, notes: "Entering deficit"}
 ];
+
+function calculateBF(waist, neck) {
+    return 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(HEIGHT)) - 450;
+}
 
 function updateClock() {
     const ist = new Date(new Date().getTime() + (new Date().getTimezoneOffset() * 60000) + (5.5 * 3600000));
     document.getElementById('ist-clock').textContent = ist.toTimeString().split(' ')[0] + " IST";
 }
-setInterval(updateClock, 1000); updateClock();
-
-function calculateBF(waist, neck) {
-    if(!waist || !neck) return 0;
-    // US Navy Formula for Men (metric)
-    return 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(HEIGHT)) - 450;
-}
+setInterval(updateClock, 1000);
 
 function render() {
     const sorted = [...db].sort((a,b) => b.date.localeCompare(a.date));
     const yesterdayEntry = sorted.find(d => d.date === YESTERDAY);
+    if(yesterdayEntry) { document.getElementById('form-ui').style.display = 'none'; document.getElementById('locked-ui').style.display = 'block'; }
 
-    if(yesterdayEntry && yesterdayEntry.w > 0) {
-        document.getElementById('form-ui').style.display = 'none';
-        document.getElementById('locked-ui').style.display = 'block';
-    }
-
+    // Logic for Missing Days (Adaptive maintenance)
+    const latest = sorted[0];
+    const currentBF = calculateBF(latest.waist, latest.neck);
+    
+    // Metabolic Stats
     const last7 = [...db].sort((a,b) => a.date.localeCompare(b.date)).slice(-7);
-    const avgW = last7.reduce((s,d) => s + d.w, 0) / last7.length;
-    const avgC = last7.reduce((s,d) => s + d.c, 0) / last7.length;
-    
-    const wDelta = last7[last7.length-1].w - last7[0].w;
-    const trueTDEE = avgC - ((wDelta * 7700) / 7);
-    const deficit = trueTDEE - avgC;
-    
-    const remainingKg = sorted[0].w - GOAL_W;
-    const daysToGoal = (deficit > 50) ? Math.ceil((remainingKg * 7700) / deficit) : "Adjust Intake";
-
-    const currentBF = calculateBF(sorted[0].waist, sorted[0].neck);
-
-    document.getElementById('val-tdee').textContent = Math.round(trueTDEE);
-    document.getElementById('val-days').textContent = (daysToGoal > 0 && daysToGoal < 500) ? daysToGoal : "---";
-    document.getElementById('val-w').textContent = avgW.toFixed(1);
-    document.getElementById('val-bf').textContent = currentBF.toFixed(1) + "%";
-
-    if(daysToGoal > 0 && daysToGoal < 500) {
-        const etaDate = new Date();
-        etaDate.setDate(etaDate.getDate() + daysToGoal);
-        document.getElementById('val-eta').textContent = "ETA: " + etaDate.toLocaleDateString('en-GB', {day:'numeric', month:'short'});
-    } else {
-        document.getElementById('val-eta').textContent = "Deficit too low for ETA";
+    let avgC = 2000, tdee = 2000;
+    if(last7.length > 1) {
+        avgC = last7.reduce((s,d) => s + d.c, 0) / last7.length;
+        const wDelta = last7[last7.length-1].w - last7[0].w;
+        tdee = avgC - ((wDelta * 7700) / 7);
     }
 
-    const histCont = document.getElementById('history-container');
-    histCont.innerHTML = '';
-    sorted.forEach(entry => {
-        const det = document.createElement('details');
-        det.innerHTML = `<summary><span>${entry.date}</span><span style="color:var(--accent)">${entry.w}kg</span></summary>
-            <div class="history-content">
-                Cals: ${entry.c} | Waist: ${entry.waist}cm | Neck: ${entry.neck}cm | BF: ${calculateBF(entry.waist, entry.neck).toFixed(1)}%<br>
-                <div style="margin-top:8px; color:var(--muted)">"${entry.notes || '...'}"</div>
-            </div>`;
-        histCont.appendChild(det);
+    const deficit = tdee - avgC;
+    const remainingKg = latest.w - GOAL_W;
+    const daysToGoal = deficit > 100 ? Math.ceil((remainingKg * 7700) / deficit) : "Adjust Intake";
+
+    // UI Update
+    document.getElementById('val-bf').textContent = currentBF.toFixed(1) + "%";
+    document.getElementById('val-tdee').textContent = Math.round(tdee);
+    document.getElementById('val-lat').textContent = latest.lat + "kg";
+    document.getElementById('val-eta-days').textContent = (deficit > 100) ? daysToGoal : "---";
+    
+    const statusBox = document.getElementById('status-display');
+    if(latest.w <= GOAL_W && currentBF <= GOAL_BF) {
+        statusBox.textContent = "MISSION COMPLETE: MAINTAIN PHASES";
+        statusBox.style.background = "rgba(52, 199, 89, 0.1)"; statusBox.style.color = "var(--green)";
+    } else {
+        statusBox.textContent = "STATUS: CONTINUE PROTOCOL";
+    }
+
+    // Archive
+    const container = document.getElementById('history-container');
+    container.innerHTML = '';
+    sorted.forEach(e => {
+        const d = document.createElement('details');
+        d.innerHTML = `<summary><span>${e.date}</span><span>${e.w}kg</span></summary>
+        <div class="history-content">
+            <b>Stats:</b> ${e.c}kcal | Waist: ${e.waist}cm | Neck: ${e.neck}cm | BF: ${calculateBF(e.waist, e.neck).toFixed(1)}%<br>
+            <b>Lat Pulldown:</b> ${e.lat}kg<br>
+            <p style="margin-top:5px; color:var(--muted)">"${e.notes || '...'}"</p>
+        </div>`;
+        container.appendChild(d);
     });
 }
 
-window.executeLog = function() {
+function executeLog() {
     const w = parseFloat(document.getElementById('in-w').value);
     const c = parseInt(document.getElementById('in-c').value);
     const waist = parseFloat(document.getElementById('in-waist').value);
     const neck = parseFloat(document.getElementById('in-neck').value);
+    const lat = parseInt(document.getElementById('in-lat').value);
     
-    if(!w || !c || !waist || !neck) return alert("All biometric data required for BF calculation.");
-    
-    db.push({
-        date: YESTERDAY, w, c, waist, neck,
-        notes: document.getElementById('in-notes').value,
-        ts: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    });
-    
-    localStorage.setItem('engine_v75_db', JSON.stringify(db));
-    render();
-};
+    if(!w || !c || !waist || !neck) return alert("Biometrics required.");
 
-window.exportData = function() {
-    const blob = new Blob([JSON.stringify(db, null, 2)], {type: 'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = `protocol_v75.json`; a.click();
-};
+    db.push({ date: YESTERDAY, w, c, waist, neck, lat, notes: document.getElementById('in-notes').value });
+    localStorage.setItem('engine_v8_db', JSON.stringify(db));
+    render();
+}
 
 render();
 </script>
