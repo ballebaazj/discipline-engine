@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Protocol v7 | 65KG Goal</title>
+<title>Protocol v7.5 | 10% BF</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root {
     --bg: #000; --card: #1c1c1e; --accent: #ff3b30; --blue: #0a84ff;
-    --green: #34c759; --text: #fff; --muted: #8e8e93; --gold: #ffd60a;
+    --green: #34c759; --text: #fff; --muted: #8e8e93;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding-bottom: 50px; }
 
 header {
@@ -19,7 +19,7 @@ header {
     padding: 20px; border-bottom: 0.5px solid #333;
 }
 .header-top { display: flex; justify-content: space-between; align-items: flex-end; }
-h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
 #ist-clock { font-family: 'IBM Plex Mono'; color: var(--accent); font-size: 13px; }
 
 .container { padding: 15px; max-width: 500px; margin: 0 auto; }
@@ -27,28 +27,24 @@ h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
 
 .card { background: var(--card); border-radius: 16px; padding: 18px; margin-bottom: 12px; border: 1px solid #2c2c2e; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
 .val { font-size: 24px; font-weight: 700; }
+.label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
 .sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
 
-/* --- INPUTS --- */
 input, select, textarea { 
     width: 100%; background: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 12px; 
-    padding: 14px; color: white; font-size: 16px; margin-top: 5px; outline: none; font-family: inherit;
+    padding: 12px; color: white; font-size: 16px; margin-top: 5px; outline: none; font-family: inherit;
 }
-textarea { height: 80px; resize: none; font-size: 14px; }
+textarea { height: 60px; resize: none; font-size: 14px; }
 .btn-main {
     width: 100%; background: var(--text); color: var(--bg); border: none;
     padding: 18px; border-radius: 16px; font-weight: 700; font-size: 16px; margin-top: 15px;
 }
-.locked-box { background: rgba(52, 199, 89, 0.1); border: 1px solid var(--green); color: var(--green); text-align: center; padding: 25px; border-radius: 16px; font-weight: 700; }
+.locked-box { background: rgba(52, 199, 89, 0.1); border: 1px solid var(--green); color: var(--green); text-align: center; padding: 20px; border-radius: 16px; font-weight: 700; }
 
-/* --- ARCHIVE (EXPANDABLE) --- */
-details { background: var(--card); border-radius: 12px; margin-bottom: 8px; border: 1px solid #2c2c2e; overflow: hidden; }
+details { background: var(--card); border-radius: 12px; margin-bottom: 8px; border: 1px solid #2c2c2e; }
 summary { padding: 15px; font-size: 14px; font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
-summary::-webkit-details-marker { display: none; }
-.history-content { padding: 0 15px 15px 15px; font-size: 13px; color: #d1d1d6; border-top: 0.5px solid #333; padding-top: 10px; }
-.history-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.history-content { padding: 10px 15px 15px; font-size: 13px; color: #d1d1d6; border-top: 0.5px solid #333; }
 </style>
 </head>
 <body>
@@ -58,89 +54,81 @@ summary::-webkit-details-marker { display: none; }
         <h1>Protocol HUD</h1>
         <div id="ist-clock">00:00:00 IST</div>
     </div>
-    <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">Tuesday, 3 March 2026</div>
 </header>
 
 <div class="container">
     
-    <div class="section-title">Objective: 65.0kg @ 10% BF</div>
+    <div class="section-title">Objective: 65kg @ 10% BF</div>
     <div class="card" style="border-left: 4px solid var(--blue);">
         <div class="grid-2">
             <div>
-                <div class="label">Days to Goal</div>
-                <div class="val" id="val-days">--</div>
-                <div class="sub" id="val-eta">Calculating...</div>
+                <div class="label">Est. Body Fat</div>
+                <div class="val" id="val-bf">--.-%</div>
+                <div class="sub">Current State</div>
             </div>
             <div>
-                <div class="label">True TDEE</div>
-                <div class="val" id="val-tdee">----</div>
-                <div class="sub">7D Burn Rate</div>
+                <div class="label">Days to Goal</div>
+                <div class="val" id="val-days">--</div>
+                <div class="sub" id="val-eta">Waiting for Deficit...</div>
             </div>
         </div>
     </div>
 
-    <div class="section-title">Current Performance</div>
+    <div class="section-title">Biological Momentum</div>
     <div class="grid-2">
         <div class="card">
-            <div class="label" style="color:var(--accent)">7D Avg Weight</div>
+            <div class="label">True TDEE</div>
+            <div class="val" id="val-tdee">----</div>
+            <div class="sub">7D Burn Rate</div>
+        </div>
+        <div class="card">
+            <div class="label" style="color:var(--accent)">Avg Weight</div>
             <div class="val" id="val-w">0.0</div>
             <div class="sub">kg (Rolling)</div>
         </div>
-        <div class="card">
-            <div class="label" style="color:var(--green)">Compliance</div>
-            <div class="val" id="val-comp">0%</div>
-            <div class="sub">10 Day Streak</div>
-        </div>
     </div>
 
-    <div class="section-title">Submission: Monday, March 2</div>
+    <div class="section-title">Log Submission: March 2</div>
     <div class="card">
         <div id="form-ui">
             <div class="grid-2">
                 <div><label>Weight (kg)</label><input type="number" id="in-w" step="0.1" placeholder="71.0"></div>
                 <div><label>Intake (kcal)</label><input type="number" id="in-c" placeholder="2000"></div>
             </div>
-            <div class="grid-2" style="margin-top:12px">
-                <div><label>Steps</label><input type="number" id="in-s" placeholder="10000"></div>
-                <div><label>Gym RPE</label>
-                    <select id="in-rpe">
-                        <option value="0">Rest</option>
-                        <option value="7">Moderate (7)</option>
-                        <option value="9">Maximum (9)</option>
-                    </select>
-                </div>
+            <div class="grid-2" style="margin-top:10px">
+                <div><label>Waist (cm)</label><input type="number" id="in-waist" placeholder="80"></div>
+                <div><label>Neck (cm)</label><input type="number" id="in-neck" placeholder="38"></div>
             </div>
-            <div style="margin-top:12px">
+            <div style="margin-top:10px">
                 <label>Strategic Notes</label>
-                <textarea id="in-notes" placeholder="Hunger levels, sleep quality, strength notes..."></textarea>
+                <textarea id="in-notes" placeholder="Effort, mood, hunger..."></textarea>
             </div>
-            <button class="btn-main" onclick="executeLog()">Seal March 2 Protocol</button>
+            <button class="btn-main" onclick="executeLog()">Seal Daily Protocol</button>
         </div>
-        <div id="locked-ui" style="display:none" class="locked-box">
-            ✓ MARCH 2 PROTOCOL SEALED
-        </div>
+        <div id="locked-ui" style="display:none" class="locked-box">✓ MARCH 2 PROTOCOL SEALED</div>
     </div>
 
     <div class="section-title">Protocol Archive</div>
     <div id="history-container"></div>
 
-    <button class="btn-main" style="background:#1c1c1e; color:#fff; border: 1px solid #333;" onclick="exportData()">Export Data Backup</button>
+    <button class="btn-main" style="background:#1c1c1e; color:#fff; border: 1px solid #333;" onclick="exportData()">Export Data</button>
 </div>
 
 <script>
 const YESTERDAY = "2026-03-02";
 const GOAL_W = 65.0;
+const HEIGHT = 175; // Set your height in cm here
 
-let db = JSON.parse(localStorage.getItem('engine_v7_db')) || [
-    {date: "2026-02-21", w: 72.2, c: 2200, s: 8000, rpe: 8, notes: "Protocol Start. Feeling strong.", ts: "08:15 AM"},
-    {date: "2026-02-22", w: 72.0, c: 2100, s: 7500, rpe: 0, notes: "Rest day. Slightly hungry.", ts: "07:30 AM"},
-    {date: "2026-02-23", w: 72.1, c: 2300, s: 11000, rpe: 9, notes: "Heavy pull session. Weight spiked.", ts: "08:00 AM"},
-    {date: "2026-02-24", w: 71.8, c: 2000, s: 10000, rpe: 7, notes: "Good energy throughout.", ts: "07:45 AM"},
-    {date: "2026-02-25", w: 71.6, c: 2100, s: 9500, rpe: 0, notes: "Mid-week rest.", ts: "09:00 AM"},
-    {date: "2026-02-26", w: 71.7, c: 2200, s: 12000, rpe: 8, notes: "Long walk today.", ts: "07:20 AM"},
-    {date: "2026-02-27", w: 71.4, c: 2000, s: 10000, rpe: 8, notes: "Strength is holding well.", ts: "08:10 AM"},
-    {date: "2026-02-28", w: 71.3, c: 2100, s: 8500, rpe: 0, notes: "Relaxed Saturday.", ts: "08:45 AM"},
-    {date: "2026-03-01", w: 71.2, c: 1900, s: 11000, rpe: 9, notes: "Pushing the deficit.", ts: "07:55 AM"}
+let db = JSON.parse(localStorage.getItem('engine_v75_db')) || [
+    {date: "2026-02-21", w: 72.2, c: 2200, waist: 82, neck: 38, notes: "Start", ts: "08:15 AM"},
+    {date: "2026-02-22", w: 72.0, c: 2100, waist: 82, neck: 38, notes: "Rest", ts: "07:30 AM"},
+    {date: "2026-02-23", w: 72.1, c: 2300, waist: 81.5, neck: 38, notes: "Heavy Lift", ts: "08:00 AM"},
+    {date: "2026-02-24", w: 71.8, c: 2000, waist: 81, neck: 38, notes: "Feeling lean", ts: "07:45 AM"},
+    {date: "2026-02-25", w: 71.6, c: 2100, waist: 81, neck: 38, notes: "Mid-week", ts: "09:00 AM"},
+    {date: "2026-02-26", w: 71.7, c: 2200, waist: 81, neck: 38, notes: "Steps high", ts: "07:20 AM"},
+    {date: "2026-02-27", w: 71.4, c: 2000, waist: 80.5, neck: 38, notes: "Steady", ts: "08:10 AM"},
+    {date: "2026-02-28", w: 71.3, c: 2100, waist: 80, neck: 38, notes: "Weekend", ts: "08:45 AM"},
+    {date: "2026-03-01", w: 71.2, c: 1900, waist: 80, neck: 38, notes: "Pushing", ts: "07:55 AM"}
 ];
 
 function updateClock() {
@@ -148,6 +136,12 @@ function updateClock() {
     document.getElementById('ist-clock').textContent = ist.toTimeString().split(' ')[0] + " IST";
 }
 setInterval(updateClock, 1000); updateClock();
+
+function calculateBF(waist, neck) {
+    if(!waist || !neck) return 0;
+    // US Navy Formula for Men (metric)
+    return 495 / (1.0324 - 0.19077 * Math.log10(waist - neck) + 0.15456 * Math.log10(HEIGHT)) - 450;
+}
 
 function render() {
     const sorted = [...db].sort((a,b) => b.date.localeCompare(a.date));
@@ -162,44 +156,37 @@ function render() {
     const avgW = last7.reduce((s,d) => s + d.w, 0) / last7.length;
     const avgC = last7.reduce((s,d) => s + d.c, 0) / last7.length;
     
-    // Metabolic Engine
     const wDelta = last7[last7.length-1].w - last7[0].w;
     const trueTDEE = avgC - ((wDelta * 7700) / 7);
     const deficit = trueTDEE - avgC;
     
-    // Days to Goal: (Remaining Fat in kg * 7700) / daily deficit
     const remainingKg = sorted[0].w - GOAL_W;
-    const daysToGoal = deficit > 0 ? Math.ceil((remainingKg * 7700) / deficit) : "---";
+    const daysToGoal = (deficit > 50) ? Math.ceil((remainingKg * 7700) / deficit) : "Adjust Intake";
+
+    const currentBF = calculateBF(sorted[0].waist, sorted[0].neck);
 
     document.getElementById('val-tdee').textContent = Math.round(trueTDEE);
-    document.getElementById('val-days').textContent = daysToGoal;
+    document.getElementById('val-days').textContent = (daysToGoal > 0 && daysToGoal < 500) ? daysToGoal : "---";
     document.getElementById('val-w').textContent = avgW.toFixed(1);
-    document.getElementById('val-comp').textContent = Math.min(100, Math.round((db.length / 10) * 100)) + "%";
+    document.getElementById('val-bf').textContent = currentBF.toFixed(1) + "%";
 
-    if(deficit > 0) {
+    if(daysToGoal > 0 && daysToGoal < 500) {
         const etaDate = new Date();
         etaDate.setDate(etaDate.getDate() + daysToGoal);
         document.getElementById('val-eta').textContent = "ETA: " + etaDate.toLocaleDateString('en-GB', {day:'numeric', month:'short'});
+    } else {
+        document.getElementById('val-eta').textContent = "Deficit too low for ETA";
     }
 
-    // Render Archive
     const histCont = document.getElementById('history-container');
     histCont.innerHTML = '';
     sorted.forEach(entry => {
         const det = document.createElement('details');
-        det.innerHTML = `
-            <summary>
-                <span>${entry.date}</span>
-                <span style="color:var(--accent)">${entry.w} kg</span>
-            </summary>
+        det.innerHTML = `<summary><span>${entry.date}</span><span style="color:var(--accent)">${entry.w}kg</span></summary>
             <div class="history-content">
-                <div class="history-row"><span>Intake:</span> <span>${entry.c} kcal</span></div>
-                <div class="history-row"><span>Steps:</span> <span>${entry.s}</span></div>
-                <div class="history-row"><span>RPE:</span> <span>${entry.rpe}</span></div>
-                <div class="history-row"><span>Time:</span> <span>${entry.ts || 'N/A'}</span></div>
-                <div style="margin-top:8px; font-style:italic; color:var(--muted)">"${entry.notes || 'No notes.'}"</div>
-            </div>
-        `;
+                Cals: ${entry.c} | Waist: ${entry.waist}cm | Neck: ${entry.neck}cm | BF: ${calculateBF(entry.waist, entry.neck).toFixed(1)}%<br>
+                <div style="margin-top:8px; color:var(--muted)">"${entry.notes || '...'}"</div>
+            </div>`;
         histCont.appendChild(det);
     });
 }
@@ -207,29 +194,25 @@ function render() {
 window.executeLog = function() {
     const w = parseFloat(document.getElementById('in-w').value);
     const c = parseInt(document.getElementById('in-c').value);
-    if(!w || !c) return alert("Biometrics required.");
+    const waist = parseFloat(document.getElementById('in-waist').value);
+    const neck = parseFloat(document.getElementById('in-neck').value);
     
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
+    if(!w || !c || !waist || !neck) return alert("All biometric data required for BF calculation.");
+    
     db.push({
-        date: YESTERDAY,
-        w: w,
-        c: c,
-        s: parseInt(document.getElementById('in-s').value) || 0,
-        rpe: parseInt(document.getElementById('in-rpe').value) || 0,
+        date: YESTERDAY, w, c, waist, neck,
         notes: document.getElementById('in-notes').value,
-        ts: timeStr
+        ts: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     });
     
-    localStorage.setItem('engine_v7_db', JSON.stringify(db));
+    localStorage.setItem('engine_v75_db', JSON.stringify(db));
     render();
 };
 
 window.exportData = function() {
     const blob = new Blob([JSON.stringify(db, null, 2)], {type: 'application/json'});
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = `protocol_v7_backup.json`; a.click();
+    a.href = URL.createObjectURL(blob); a.download = `protocol_v75.json`; a.click();
 };
 
 render();
