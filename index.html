@@ -3,224 +3,192 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Discipline Engine | Welcome!</title>
+<title>Summary | Discipline Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
 <style>
 :root {
-  --glossy-blue: linear-gradient(to bottom, #74b9ff, #0984e3);
-  --aqua-green: #55efc4;
-  --glass: rgba(255, 255, 255, 0.75);
-  --border: #a29bfe;
-  --font-main: "Tahoma", "Arial", sans-serif;
+    --bg: #000000; --card: #1c1c1e; --accent: #ff3b30; 
+    --green: #34c759; --text: #ffffff; --muted: #8e8e93;
 }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding-bottom: 60px; }
 
-body {
-  background: linear-gradient(135deg, #74b9ff 0%, #a29bfe 50%, #55efc4 100%);
-  background-attachment: fixed;
-  font-family: var(--font-main);
-  color: #2d3436;
-  margin: 0; padding: 0;
-}
-
-/* Glassmorphism Header */
+/* --- HUD --- */
 header {
-  background: var(--glass);
-  backdrop-filter: blur(10px);
-  border-bottom: 2px solid white;
-  padding: 15px 40px;
-  display: flex; justify-content: space-between; align-items: center;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(20px);
+    padding: 20px; border-bottom: 0.5px solid #333;
+}
+.header-top { display: flex; justify-content: space-between; align-items: flex-end; }
+h1 { font-size: 34px; font-weight: 700; letter-spacing: -1px; }
+#ist-clock { font-family: 'IBM Plex Mono'; color: var(--accent); font-size: 14px; font-weight: 600; }
+.date-sub { color: var(--muted); font-size: 13px; text-transform: uppercase; margin-top: 4px; }
+
+/* --- LAYOUT --- */
+.container { padding: 15px; max-width: 500px; margin: 0 auto; }
+.section-label { font-size: 20px; font-weight: 700; margin: 25px 0 15px 5px; }
+
+/* --- CARDS --- */
+.card {
+    background: var(--card); border-radius: 12px;
+    padding: 16px; margin-bottom: 12px;
+}
+.card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.card-header span { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.card-value { font-size: 32px; font-weight: 700; }
+.card-unit { font-size: 16px; color: var(--muted); font-weight: 400; }
+.card-footer { font-size: 13px; color: var(--muted); margin-top: 8px; border-top: 0.5px solid #333; padding-top: 8px; }
+
+/* --- INPUT --- */
+.input-field { margin-bottom: 15px; }
+label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+input { 
+    width: 100%; background: #2c2c2e; border: none; border-radius: 8px; 
+    padding: 14px; color: white; font-size: 17px; outline: none;
+}
+.btn-save {
+    width: 100%; background: var(--accent); color: white; border: none;
+    padding: 16px; border-radius: 12px; font-weight: 700; font-size: 17px; margin-top: 10px;
+}
+.locked-box { 
+    border: 1px solid var(--green); color: var(--green); 
+    text-align: center; padding: 15px; border-radius: 12px; font-weight: 600;
 }
 
-.logo {
-  font-size: 24px; font-weight: bold; color: #0984e3;
-  text-shadow: 1px 1px white; letter-spacing: -1px;
-}
-
-.portal-container {
-  max-width: 1100px; margin: 20px auto;
-  display: grid; grid-template-columns: 200px 1fr 250px; gap: 20px;
-  padding: 0 20px;
-}
-
-/* Sidebar Layout (Yahoo Japan Style) */
-.sidebar {
-  background: var(--glass);
-  border: 1px solid white; border-radius: 8px; padding: 10px;
-  font-size: 12px; line-height: 2;
-}
-
-.sidebar h3 { font-size: 14px; margin-bottom: 5px; color: #0984e3; border-bottom: 1px solid #ddd; }
-.sidebar-link { color: #0984e3; text-decoration: none; display: block; }
-.sidebar-link:hover { text-decoration: underline; background: #fff; }
-
-/* Main Engine UI */
-.main-content {
-  background: white; border: 1px solid #ccc; border-radius: 4px;
-  box-shadow: 5px 5px 0px rgba(0,0,0,0.05); padding: 20px;
-}
-
-.glossy-card {
-  background: var(--glossy-blue); color: white;
-  padding: 20px; border-radius: 12px; position: relative;
-  overflow: hidden; border: 1px solid rgba(255,255,255,0.4);
-  margin-bottom: 20px;
-}
-
-.glossy-card::before {
-  content: ""; position: absolute; top: -50%; left: -10%; width: 120%; height: 100%;
-  background: rgba(255,255,255,0.2); border-radius: 50%;
-}
-
-.weight-display { font-size: 48px; font-weight: bold; }
-
-/* Form Elements */
-.data-box { border: 1px solid #eee; background: #f9f9f9; padding: 15px; margin-top: 20px; }
-input { border: 1px solid #ccc; padding: 8px; margin-bottom: 10px; border-radius: 4px; width: 80%; }
-.btn-aqua {
-  background: var(--aqua-green); color: #000; font-weight: bold;
-  border: none; padding: 12px 24px; border-radius: 50px;
-  box-shadow: 0 4px 0 #00b894; cursor: pointer;
-}
-.btn-aqua:active { transform: translateY(2px); box-shadow: 0 2px 0 #00b894; }
-.btn-aqua:disabled { background: #dfe6e9; box-shadow: none; cursor: not-allowed; }
-
-.status-badge {
-  display: inline-block; padding: 5px 15px; border-radius: 20px;
-  font-weight: bold; font-size: 12px; margin-top: 10px;
-}
-.status-optimal { background: #55efc4; color: #006266; }
-.status-locked { background: #fab1a0; color: #c0392b; }
-
+/* --- MINI CHART --- */
+.chart-container { display: flex; align-items: flex-end; gap: 4px; height: 30px; margin-top: 10px; }
+.bar { background: #3a3a3c; width: 100%; border-radius: 2px; transition: height 0.3s; }
+.bar.highlight { background: var(--accent); }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">◕ DisciplineEngine.exe</div>
-  <div id="clock" style="font-weight: bold; font-size: 14px;"></div>
+    <div class="header-top">
+        <h1>Summary</h1>
+        <div id="ist-clock">--:--:-- IST</div>
+    </div>
+    <div class="date-sub">Tuesday, 3 March 2026</div>
 </header>
 
-<div class="portal-container">
-  <aside class="sidebar">
-    <h3>Service List</h3>
-    <a href="#" class="sidebar-link">My Dashboard</a>
-    <a href="#" class="sidebar-link">Metabolic Map</a>
-    <a href="#" class="sidebar-link">Community Stats</a>
-    <a href="#" class="sidebar-link">Engine Settings</a>
-    <br>
-    <h3>Quick Tools</h3>
-    <button onclick="seedRoughData()" style="font-size: 10px; cursor: pointer;">[Seed 7D Mock Data]</button>
-  </aside>
-
-  <main class="main-content">
-    <div class="glossy-card">
-      <div style="font-size: 14px; opacity: 0.9;">7-Day Weight Average</div>
-      <div class="weight-display" id="disp-weight">0.0 kg</div>
-      <div id="disp-delta" style="font-size: 14px;">Initializing biometrics...</div>
-      <div id="verdict-area"></div>
+<div class="container">
+    <div class="section-label">Performance Rings</div>
+    
+    <div class="card">
+        <div class="card-header"><span style="color:var(--accent)">● Morning Weight</span></div>
+        <div class="card-value" id="disp-w">0.0 <span class="card-unit">kg</span></div>
+        <div class="chart-container" id="chart-w"></div>
+        <div class="card-footer" id="footer-w">Trend: Calculating...</div>
     </div>
 
-    <div class="data-box" id="log-section">
-      <h2 style="font-size: 18px; margin-top: 0;">Log for Yesterday: <span id="target-date-ui" style="color:#0984e3"></span></h2>
-      <p style="font-size: 11px; color: #666;">Note: According to Protocol, data can only be submitted for the previous day. Changes are final.</p>
-      
-      <div id="form-fields">
-        <label>Body Weight (kg)</label><br>
-        <input type="number" id="inp-weight" step="0.1" placeholder="e.g. 78.5"><br>
-        <label>Energy Intake (kcal)</label><br>
-        <input type="number" id="inp-cal" placeholder="e.g. 2400"><br>
-        <label>Protein (g)</label><br>
-        <input type="number" id="inp-prot" placeholder="e.g. 160"><br>
-        <button class="btn-aqua" id="submit-btn" onclick="submitEntry()">COMMIT DATA</button>
-      </div>
-      <div id="lock-msg"></div>
+    <div class="card">
+        <div class="card-header"><span style="color:#ff9f0a">● Energy Intake</span></div>
+        <div class="card-value" id="disp-c">0 <span class="card-unit">kcal</span></div>
+        <div class="card-footer" id="footer-c">Maintenance Est: --</div>
     </div>
-  </main>
 
-  <aside class="sidebar">
-    <h3>System Health</h3>
-    <div id="compliance-pct" style="font-size: 24px; color: #00b894; font-weight: bold;">0%</div>
-    <p>Adherence to Protocol</p>
-    <hr>
-    <h3>Protocol Rules</h3>
-    <ul style="padding-left: 15px;">
-      <li>Log daily (Yesterday only)</li>
-      <li>Entries are immutable</li>
-      <li>Future logs disabled</li>
-    </ul>
-  </aside>
+    <div class="section-label">Log: March 2</div>
+    
+    <div class="card" id="input-card">
+        <div id="form-ui">
+            <div class="input-field">
+                <label>WEIGHT (KG)</label>
+                <input type="number" id="in-w" step="0.1" placeholder="00.0">
+            </div>
+            <div class="input-field">
+                <label>INTAKE (KCAL)</label>
+                <input type="number" id="in-c" placeholder="0000">
+            </div>
+            <button class="btn-save" onclick="saveData()">Save to Protocol</button>
+        </div>
+        <div id="locked-ui" style="display:none" class="locked-box">
+            SYSTEM LOCKED: March 2 Data Finalized
+        </div>
+    </div>
+
+    <div class="section-label">Consistency</div>
+    <div class="card">
+        <div class="card-header"><span style="color:var(--green)">● Compliance Score</span></div>
+        <div class="card-value" id="disp-comp">0%</div>
+        <div class="card-footer">Last 10 days of adherence</div>
+    </div>
 </div>
 
-<script type="module">
-// Mocking Firebase locally for demonstration of the "Seed Data" and logic
-let db = JSON.parse(localStorage.getItem('discipline_db')) || [];
+<script>
+const YESTERDAY = "2026-03-02";
 
-// Logic: Today is March 3rd, 2026. Target is March 2nd.
-const today = new Date("2026-03-03");
-const yesterday = new Date(today); yesterday.setDate(today.getDate() - 1);
-const yesterdayStr = yesterday.toISOString().split('T')[0];
+// --- SEEDED DATA (Feb 21 - March 1) ---
+let dataStore = JSON.parse(localStorage.getItem('engine_v4_final')) || [
+    {date: "2026-02-21", w: 82.5, c: 2400},
+    {date: "2026-02-22", w: 82.3, c: 2300},
+    {date: "2026-02-23", w: 82.4, c: 2500},
+    {date: "2026-02-24", w: 82.1, c: 2200},
+    {date: "2026-02-25", w: 81.8, c: 2150},
+    {date: "2026-02-26", w: 81.9, c: 2400},
+    {date: "2026-02-27", w: 81.6, c: 2100},
+    {date: "2026-02-28", w: 81.4, c: 2200},
+    {date: "2026-03-01", w: 81.1, c: 2000}
+];
 
-document.getElementById('target-date-ui').textContent = yesterdayStr;
-document.getElementById('clock').textContent = today.toDateString();
+// --- IST CLOCK ---
+function runClock() {
+    const now = new Date();
+    const ist = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (5.5 * 3600000));
+    document.getElementById('ist-clock').textContent = ist.toTimeString().split(' ')[0] + " IST";
+}
+setInterval(runClock, 1000); runClock();
 
-function render() {
-  const sorted = [...db].sort((a,b) => a.date.localeCompare(b.date));
-  const hasLogged = sorted.some(d => d.date === yesterdayStr);
+// --- CORE ENGINE ---
+function refreshUI() {
+    const sorted = [...dataStore].sort((a,b) => a.date.localeCompare(b.date));
+    const loggedYesterday = sorted.some(d => d.date === YESTERDAY);
 
-  // Lock logic
-  if (hasLogged) {
-    document.getElementById('form-fields').style.display = 'none';
-    document.getElementById('lock-msg').innerHTML = `<div class="status-badge status-locked">DATABASE LOCKED: ENTRY RECORDED</div>`;
-  }
+    if(loggedYesterday) {
+        document.getElementById('form-ui').style.display = 'none';
+        document.getElementById('locked-ui').style.display = 'block';
+    }
 
-  if (sorted.length > 0) {
-    const avgW = getAvg(sorted, 'weight', 7);
-    const prevW = getAvg(sorted.slice(0, -7), 'weight', 7);
-    const delta = prevW ? ((avgW - prevW) / prevW * 100).toFixed(2) : "0.00";
+    const last7 = sorted.slice(-7);
+    const avgW = last7.reduce((s,d) => s + d.w, 0) / last7.length;
+    const avgC = last7.reduce((s,d) => s + d.c, 0) / last7.length;
 
-    document.getElementById('disp-weight').textContent = avgW.toFixed(1) + " kg";
-    document.getElementById('disp-delta').textContent = delta + "% Weekly Trend";
-    
-    const compliance = Math.round((sorted.slice(-7).filter(d => d.calories > 0).length / 7) * 100);
-    document.getElementById('compliance-pct').textContent = compliance + "%";
-  }
+    // Maintenance Calculation
+    const startW = sorted[0].w;
+    const endW = sorted[sorted.length-1].w;
+    const diffW = endW - startW;
+    const dayCount = (new Date(sorted[sorted.length-1].date) - new Date(sorted[0].date)) / 86400000;
+    const maint = avgC - ((diffW * 7700) / dayCount);
+
+    // UI Updates
+    document.getElementById('disp-w').innerHTML = `${avgW.toFixed(1)} <span class="card-unit">kg</span>`;
+    document.getElementById('disp-c').innerHTML = `${avgC.toFixed(0)} <span class="card-unit">kcal</span>`;
+    document.getElementById('footer-c').textContent = `Maintenance Est: ${Math.round(maint)} kcal`;
+    document.getElementById('footer-w').textContent = `7D Trend: ${diffW < 0 ? '▼' : '▲'} ${Math.abs(diffW).toFixed(1)} kg`;
+
+    // Bars
+    const chart = document.getElementById('chart-w');
+    chart.innerHTML = '';
+    last7.forEach((d, i) => {
+        const bar = document.createElement('div');
+        bar.className = `bar ${i === last7.length-1 ? 'highlight' : ''}`;
+        bar.style.height = ((d.w - 70) * 4) + 'px'; // Dynamic scaling
+        chart.appendChild(bar);
+    });
+
+    const comp = Math.round((sorted.length / 10) * 100);
+    document.getElementById('disp-comp').textContent = comp + "%";
 }
 
-function getAvg(arr, key, days) {
-  const subset = arr.slice(-days).map(d => d[key]);
-  return subset.length ? subset.reduce((a,b) => a+b, 0) / subset.length : 0;
-}
-
-window.submitEntry = function() {
-  const weight = parseFloat(document.getElementById('inp-weight').value);
-  const cals = parseInt(document.getElementById('inp-cal').value);
-  const prot = parseInt(document.getElementById('inp-prot').value);
-
-  if (!weight || !cals) return alert("System Error: Weight/Calories missing.");
-
-  db.push({ date: yesterdayStr, weight, calories: cals, protein: prot });
-  localStorage.setItem('discipline_db', JSON.stringify(db));
-  render();
+window.saveData = function() {
+    const w = parseFloat(document.getElementById('in-w').value);
+    const c = parseInt(document.getElementById('in-c').value);
+    if(!w || !c) return alert("Missing Data.");
+    dataStore.push({date: YESTERDAY, w, c});
+    localStorage.setItem('engine_v4_final', JSON.stringify(dataStore));
+    refreshUI();
 };
 
-// --- ROUGH DATA GENERATOR ---
-window.seedRoughData = function() {
-  const mockData = [
-    { date: "2026-02-24", weight: 80.5, calories: 2100, protein: 160 },
-    { date: "2026-02-25", weight: 80.2, calories: 2050, protein: 155 },
-    { date: "2026-02-26", weight: 80.3, calories: 2100, protein: 165 },
-    { date: "2026-02-27", weight: 80.0, calories: 1900, protein: 160 },
-    { date: "2026-02-28", weight: 79.8, calories: 2150, protein: 170 },
-    { date: "2026-03-01", weight: 79.6, calories: 2100, protein: 160 },
-    // March 2nd left out for you to log!
-  ];
-  db = mockData;
-  localStorage.setItem('discipline_db', JSON.stringify(db));
-  render();
-  alert("7 Days of historical data synced!");
-};
-
-render();
+refreshUI();
 </script>
 </body>
 </html>
