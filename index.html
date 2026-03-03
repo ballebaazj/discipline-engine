@@ -3,97 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Protocol v6 | Command</title>
+<title>Protocol</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root {
     --bg: #000; --card: #1c1c1e; --accent: #ff3b30; --blue: #0a84ff;
-    --green: #34c759; --text: #fff; --muted: #8e8e93; --gold: #ffd60a;
+    --green: #34c759; --text: #fff; --muted: #8e8e93;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding-bottom: 60px; overscroll-behavior: none; }
 
-/* --- HUD --- */
 header {
     position: sticky; top: 0; z-index: 1000;
-    background: rgba(0,0,0,0.8); backdrop-filter: blur(20px);
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(20px);
     padding: 20px; border-bottom: 0.5px solid #333;
 }
 .header-top { display: flex; justify-content: space-between; align-items: flex-end; }
-h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+h1 { font-size: 26px; font-weight: 700; }
 #ist-clock { font-family: 'IBM Plex Mono'; color: var(--accent); font-size: 13px; }
 
 .container { padding: 15px; max-width: 500px; margin: 0 auto; }
-.section-title { font-size: 12px; font-weight: 700; margin: 25px 0 10px 5px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; }
+.section-title { font-size: 11px; font-weight: 700; margin: 25px 0 10px 5px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.2px; }
 
-/* --- CARDS --- */
 .card { background: var(--card); border-radius: 16px; padding: 18px; margin-bottom: 12px; border: 1px solid #2c2c2e; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
 .val { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
-.status-pill { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 800; }
 
-/* --- VERDICT BOX --- */
-.verdict-box { background: rgba(10, 132, 255, 0.1); border: 1px solid var(--blue); border-radius: 12px; padding: 15px; margin-bottom: 20px; }
-.verdict-text { font-size: 14px; line-height: 1.5; color: #d1d1d6; }
-
-/* --- INTERACTIVES --- */
-.w-btn { background: #2c2c2e; border: none; color: white; width: 50px; height: 50px; border-radius: 12px; font-size: 22px; transition: transform 0.1s; }
-.w-btn:active { transform: scale(0.9); background: #3a3a3c; }
-
+.w-btn { background: #2c2c2e; border: none; color: white; width: 45px; height: 45px; border-radius: 12px; font-size: 22px; }
 input, select { 
     width: 100%; background: #2c2c2e; border: 1px solid #3a3a3c; border-radius: 12px; 
-    padding: 16px; color: white; font-size: 16px; margin-top: 5px; outline: none; transition: border 0.2s;
+    padding: 16px; color: white; font-size: 16px; margin-top: 5px; outline: none;
 }
-input:focus { border-color: var(--blue); }
 .btn-main {
     width: 100%; background: var(--text); color: var(--bg); border: none;
-    padding: 18px; border-radius: 16px; font-weight: 700; font-size: 17px; margin-top: 15px;
+    padding: 18px; border-radius: 16px; font-weight: 700; font-size: 16px; margin-top: 15px;
 }
-.btn-secondary { background: #2c2c2e; color: var(--text); margin-top: 8px; font-size: 14px; padding: 12px; }
+.locked-box { background: rgba(52, 199, 89, 0.1); border: 1px solid var(--green); color: var(--green); text-align: center; padding: 20px; border-radius: 16px; font-weight: 700; }
 
-.locked-box { background: rgba(52, 199, 89, 0.1); border: 1px solid var(--green); color: var(--green); text-align: center; padding: 25px; border-radius: 16px; font-weight: 700; }
-
-/* --- CHARTS --- */
-.mini-chart { display: flex; align-items: flex-end; gap: 4px; height: 50px; margin-top: 15px; }
-.bar { background: #3a3a3c; flex: 1; border-radius: 3px; position: relative; }
-.bar.active { background: var(--accent); box-shadow: 0 0 10px rgba(255, 59, 48, 0.4); }
+.mini-chart { display: flex; align-items: flex-end; gap: 4px; height: 40px; margin-top: 10px; }
+.bar { background: #333; flex: 1; border-radius: 2px; }
+.bar.active { background: var(--accent); }
+#heatmap { display: flex; gap: 3px; height: 10px; margin-top: 10px; }
+.h-block { flex: 1; border-radius: 1px; }
 </style>
 </head>
 <body>
 
 <header>
     <div class="header-top">
-        <h1>Protocol HUD</h1>
+        <h1>Command Center</h1>
         <div id="ist-clock">00:00:00 IST</div>
     </div>
-    <div style="font-size: 13px; color: var(--muted); margin-top: 4px;">Tuesday, 3 March 2026</div>
+    <div style="font-size: 12px; color: var(--muted); margin-top: 4px;">Today: Tuesday, 3 March 2026</div>
 </header>
 
 <div class="container">
     
     <div class="section-title">Engine Intelligence</div>
-    <div class="verdict-box">
-        <div class="label" style="color:var(--blue)">● System Recommendation</div>
-        <div class="verdict-text" id="ai-verdict">Calibrating data... Log March 2 to finalize verdict.</div>
-    </div>
-
     <div class="card">
         <div class="grid-2">
             <div>
-                <div class="label">True TDEE (7D)</div>
+                <div class="label">Avg TDEE (7D)</div>
                 <div class="val" id="val-tdee">----</div>
-                <div class="sub" style="font-size:11px; color:var(--muted)">kcal / Day</div>
+                <div style="font-size:11px; color:var(--muted)">kcal / Day</div>
             </div>
             <div>
-                <div class="label">Forecast</div>
+                <div class="label">30D Forecast</div>
                 <div class="val" id="val-pred">--.-</div>
-                <div class="sub" style="font-size:11px; color:var(--muted)">kg by April 3</div>
+                <div style="font-size:11px; color:var(--muted)">kg by April 3</div>
             </div>
         </div>
     </div>
 
-    <div class="section-title">Core Biometrics</div>
+    <div class="section-title">Rolling Statistics</div>
     <div class="grid-2">
         <div class="card">
             <div class="label" style="color:var(--accent)">Avg Weight</div>
@@ -101,73 +84,66 @@ input:focus { border-color: var(--blue); }
             <div class="mini-chart" id="chart-w"></div>
         </div>
         <div class="card">
-            <div class="label" style="color:var(--gold)">Compliance</div>
+            <div class="label" style="color:var(--blue)">Compliance</div>
             <div class="val" id="val-comp">0%</div>
-            <div style="margin-top:15px; height:35px; display:flex; gap:2px;" id="streak-heatmap"></div>
+            <div id="heatmap"></div>
         </div>
     </div>
 
     <div class="card">
-        <div class="label" style="color:var(--blue)">💧 Hydration Protocol</div>
+        <div class="label" style="color:var(--blue)">💧 Hydration Level</div>
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <div class="val"><span id="val-water">0.0</span> <span style="font-size:14px; color:var(--muted)">L</span></div>
             <div style="display:flex; gap:8px;">
-                <button class="w-btn" onclick="vibrate(); updateWater(-0.25)">-</button>
-                <button class="w-btn" onclick="vibrate(); updateWater(0.25)">+</button>
+                <button class="w-btn" onclick="updateWater(-0.25)">-</button>
+                <button class="w-btn" onclick="updateWater(0.25)">+</button>
             </div>
         </div>
     </div>
 
-    <div class="section-title">Submission: Monday, March 2</div>
-    <div class="card" style="margin-bottom:40px;">
+    <div class="section-title">Target Log: Monday, March 2</div>
+    <div class="card">
         <div id="form-ui">
             <div class="grid-2">
-                <div><label>Weight (kg)</label><input type="number" id="in-w" step="0.1" placeholder="80.0"></div>
-                <div><label>Intake (kcal)</label><input type="number" id="in-c" placeholder="2200"></div>
+                <div><label>Weight (kg)</label><input type="number" id="in-w" step="0.1" placeholder="71.0"></div>
+                <div><label>Intake (kcal)</label><input type="number" id="in-c" placeholder="2000"></div>
             </div>
-            <div class="grid-2" style="margin-top:12px">
+            <div class="grid-2" style="margin-top:10px">
                 <div><label>Daily Steps</label><input type="number" id="in-s" placeholder="10000"></div>
                 <div>
                     <label>Gym RPE</label>
                     <select id="in-rpe">
-                        <option value="0">Recovery Day</option>
-                        <option value="6">Warmup (6)</option>
-                        <option value="8">Optimal (8)</option>
-                        <option value="10">Max Effort (10)</option>
+                        <option value="0">Rest</option>
+                        <option value="7">Medium (7)</option>
+                        <option value="9">High (9)</option>
                     </select>
                 </div>
             </div>
-            <button class="btn-main" onclick="vibrate(); executeLog()">Seal Daily Protocol</button>
+            <button class="btn-main" onclick="executeLog()">Save Entry</button>
         </div>
         <div id="locked-ui" style="display:none" class="locked-box">
-            PROTOCOL SEALED: DATA IMMUTABLE
+            ✓ MARCH 2 PROTOCOL SEALED
         </div>
     </div>
 
-    <div class="grid-2" style="margin-top:20px;">
-        <button class="btn-main btn-secondary" onclick="exportData()">Backup JSON</button>
-        <button class="btn-main btn-secondary" onclick="triggerImport()">Import Data</button>
-    </div>
-    <input type="file" id="import-file" style="display:none" onchange="importData(event)">
-
+    <button class="btn-main" style="background:#222; color:#fff;" onclick="exportData()">Export JSON Backup</button>
 </div>
 
 <script>
 const YESTERDAY = "2026-03-02";
 
-let db = JSON.parse(localStorage.getItem('engine_v6_db')) || [
-    {date: "2026-02-21", w: 82.5, c: 2400, s: 8000, rpe: 9, water: 3},
-    {date: "2026-02-22", w: 82.3, c: 2300, s: 7500, rpe: 0, water: 2.5},
-    {date: "2026-02-23", w: 82.4, c: 2500, s: 11000, rpe: 9, water: 3.5},
-    {date: "2026-02-24", w: 82.1, c: 2200, s: 10000, rpe: 7, water: 3},
-    {date: "2026-02-25", w: 81.8, c: 2150, s: 9500, rpe: 0, water: 2},
-    {date: "2026-02-26", w: 81.9, c: 2400, s: 12000, rpe: 8, water: 4},
-    {date: "2026-02-27", w: 81.6, c: 2100, s: 10000, rpe: 8, water: 3},
-    {date: "2026-02-28", w: 81.4, c: 2200, s: 8500, rpe: 0, water: 2.5},
-    {date: "2026-03-01", w: 81.1, c: 2000, s: 11000, rpe: 9, water: 3.5}
+// --- CORRECTED SEED DATA (Scaled to 71kg) ---
+let db = JSON.parse(localStorage.getItem('engine_71_db')) || [
+    {date: "2026-02-21", w: 72.2, c: 2200, s: 8000, rpe: 8, water: 3},
+    {date: "2026-02-22", w: 72.0, c: 2100, s: 7500, rpe: 0, water: 2},
+    {date: "2026-02-23", w: 72.1, c: 2300, s: 11000, rpe: 9, water: 3},
+    {date: "2026-02-24", w: 71.8, c: 2000, s: 10000, rpe: 7, water: 2.5},
+    {date: "2026-02-25", w: 71.6, c: 2100, s: 9500, rpe: 0, water: 2},
+    {date: "2026-02-26", w: 71.7, c: 2200, s: 12000, rpe: 8, water: 3.5},
+    {date: "2026-02-27", w: 71.4, c: 2000, s: 10000, rpe: 8, water: 3},
+    {date: "2026-02-28", w: 71.3, c: 2100, s: 8500, rpe: 0, water: 2.5},
+    {date: "2026-03-01", w: 71.2, c: 1900, s: 11000, rpe: 9, water: 3}
 ];
-
-function vibrate() { if(navigator.vibrate) navigator.vibrate(10); }
 
 function updateClock() {
     const ist = new Date(new Date().getTime() + (new Date().getTimezoneOffset() * 60000) + (5.5 * 3600000));
@@ -188,95 +164,64 @@ function render() {
     const avgW = last7.reduce((s,d) => s + d.w, 0) / last7.length;
     const avgC = last7.reduce((s,d) => s + d.c, 0) / last7.length;
     
-    // Metabolic Logic
+    // TDEE ROLLING AVG MATH
     const wDelta = last7[last7.length-1].w - last7[0].w;
     const trueTDEE = avgC - ((wDelta * 7700) / 7);
     const forecast = sorted[sorted.length-1].w - (((trueTDEE - avgC) * 30) / 7700);
 
-    // Update UI Values
     document.getElementById('val-tdee').textContent = Math.round(trueTDEE);
     document.getElementById('val-pred').textContent = forecast.toFixed(1);
     document.getElementById('val-w').textContent = avgW.toFixed(1);
     document.getElementById('val-water').textContent = (yesterdayEntry ? yesterdayEntry.water : 0).toFixed(2);
     document.getElementById('val-comp').textContent = Math.round((sorted.length / 10) * 100) + "%";
 
-    // Charts & Heatmap
     const chart = document.getElementById('chart-w');
     chart.innerHTML = '';
     last7.forEach((d, i) => {
         const bar = document.createElement('div');
         bar.className = `bar ${i === last7.length-1 ? 'active' : ''}`;
-        bar.style.height = Math.max(10, (d.w - 75) * 6) + 'px';
+        bar.style.height = Math.max(5, (d.w - 70) * 15) + 'px';
         chart.appendChild(bar);
     });
 
-    const heatmap = document.getElementById('streak-heatmap');
+    const heatmap = document.getElementById('heatmap');
     heatmap.innerHTML = '';
     for(let i=0; i<10; i++) {
-        const block = document.createElement('div');
-        block.style.flex = "1";
-        block.style.background = sorted[i] ? 'var(--green)' : '#333';
-        block.style.borderRadius = "2px";
-        heatmap.appendChild(block);
-    }
-
-    // Intelligence Verdict
-    const verdict = document.getElementById('ai-verdict');
-    if(!yesterdayEntry || yesterdayEntry.w === 0) {
-        verdict.innerHTML = "Awaiting final biometrics for March 2 to generate metabolic verdict.";
-    } else {
-        const rpeAvg = last7.reduce((s,d) => s + d.rpe, 0) / last7.length;
-        if(rpeAvg > 8 && wDelta >= 0) {
-            verdict.innerHTML = "<b>Alert:</b> High training intensity with stagnant weight. System suggests 150kcal surplus for 2 days to drop cortisol.";
-        } else if(wDelta < -0.5) {
-            verdict.innerHTML = "<b>Optimal:</b> Rate of loss is high. Maintain current intake. Metabolism is primed.";
-        } else {
-            verdict.innerHTML = "<b>Stable:</b> Protocol on track. Consider adding 2,000 steps to accelerate fat oxidation.";
-        }
+        const h = document.createElement('div');
+        h.className = 'h-block';
+        h.style.background = sorted[i] ? 'var(--green)' : '#222';
+        heatmap.appendChild(h);
     }
 }
 
-// --- UTILITIES ---
 window.updateWater = function(amt) {
     let entry = db.find(d => d.date === YESTERDAY);
     if(!entry) { entry = { date: YESTERDAY, w: 0, c: 0, s: 0, rpe: 0, water: 0 }; db.push(entry); }
     entry.water = Math.max(0, entry.water + amt);
-    localStorage.setItem('engine_v6_db', JSON.stringify(db));
+    localStorage.setItem('engine_71_db', JSON.stringify(db));
     render();
 }
 
 window.executeLog = function() {
     const w = parseFloat(document.getElementById('in-w').value);
     const c = parseInt(document.getElementById('in-c').value);
-    if(!w || !c) return alert("System requires Weight and Calories.");
+    if(!w || !c) return alert("Fill mandatory fields.");
     let entry = db.find(d => d.date === YESTERDAY);
     if(entry) {
         entry.w = w; entry.c = c;
-        entry.s = parseInt(document.getElementById('in-s').value) || 0;
+        entry.s = parseInt(document.getElementById('in-s').value) || 10000;
         entry.rpe = parseInt(document.getElementById('in-rpe').value) || 0;
     } else {
         db.push({date: YESTERDAY, w, c, s: 10000, rpe: 8, water: 0});
     }
-    localStorage.setItem('engine_v6_db', JSON.stringify(db));
+    localStorage.setItem('engine_71_db', JSON.stringify(db));
     render();
 };
 
 window.exportData = function() {
     const blob = new Blob([JSON.stringify(db)], {type: 'application/json'});
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = `engine_v6_backup.json`; a.click();
-};
-
-window.triggerImport = () => document.getElementById('import-file').click();
-window.importData = (e) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        db = JSON.parse(event.target.result);
-        localStorage.setItem('engine_v6_db', JSON.stringify(db));
-        render();
-        alert("Protocol Data Restored.");
-    };
-    reader.readAsText(e.target.files[0]);
+    a.href = URL.createObjectURL(blob); a.download = `71kg_protocol.json`; a.click();
 };
 
 render();
