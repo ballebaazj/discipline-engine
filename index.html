@@ -3,192 +3,262 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Summary | Discipline Engine</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+<title>Command | Discipline Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root {
-    --bg: #000000; --card: #1c1c1e; --accent: #ff3b30; 
-    --green: #34c759; --text: #ffffff; --muted: #8e8e93;
+    --bg: #000; --card: #1c1c1e; --accent: #ff3b30; --blue: #0a84ff;
+    --green: #34c759; --text: #fff; --muted: #8e8e93;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { background-color: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding-bottom: 60px; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; padding-bottom: 40px; }
 
 /* --- HUD --- */
 header {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(0,0,0,0.8); backdrop-filter: blur(20px);
+    position: sticky; top: 0; z-index: 1000;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(20px);
     padding: 20px; border-bottom: 0.5px solid #333;
 }
 .header-top { display: flex; justify-content: space-between; align-items: flex-end; }
-h1 { font-size: 34px; font-weight: 700; letter-spacing: -1px; }
-#ist-clock { font-family: 'IBM Plex Mono'; color: var(--accent); font-size: 14px; font-weight: 600; }
-.date-sub { color: var(--muted); font-size: 13px; text-transform: uppercase; margin-top: 4px; }
+h1 { font-size: 32px; font-weight: 700; letter-spacing: -1px; }
+#ist-clock { font-family: 'IBM Plex Mono'; color: var(--accent); font-size: 13px; }
 
 /* --- LAYOUT --- */
 .container { padding: 15px; max-width: 500px; margin: 0 auto; }
-.section-label { font-size: 20px; font-weight: 700; margin: 25px 0 15px 5px; }
+.section-label { font-size: 18px; font-weight: 700; margin: 25px 0 12px 5px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 
 /* --- CARDS --- */
-.card {
-    background: var(--card); border-radius: 12px;
-    padding: 16px; margin-bottom: 12px;
-}
-.card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.card-header span { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-.card-value { font-size: 32px; font-weight: 700; }
-.card-unit { font-size: 16px; color: var(--muted); font-weight: 400; }
-.card-footer { font-size: 13px; color: var(--muted); margin-top: 8px; border-top: 0.5px solid #333; padding-top: 8px; }
+.card { background: var(--card); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+.val { font-size: 24px; font-weight: 700; }
+.sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
 
-/* --- INPUT --- */
-.input-field { margin-bottom: 15px; }
-label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 6px; }
-input { 
-    width: 100%; background: #2c2c2e; border: none; border-radius: 8px; 
-    padding: 14px; color: white; font-size: 17px; outline: none;
+/* --- WATER TRACKER --- */
+.water-ctrl { display: flex; justify-content: space-between; align-items: center; background: #2c2c2e; border-radius: 10px; padding: 10px; margin-top: 10px; }
+.w-btn { background: #3a3a3c; border: none; color: white; width: 40px; height: 40px; border-radius: 8px; font-size: 20px; font-weight: bold; }
+
+/* --- INPUTS --- */
+input, select { 
+    width: 100%; background: #2c2c2e; border: none; border-radius: 10px; 
+    padding: 14px; color: white; font-size: 16px; margin-top: 5px; outline: none;
 }
-.btn-save {
+.btn-main {
     width: 100%; background: var(--accent); color: white; border: none;
-    padding: 16px; border-radius: 12px; font-weight: 700; font-size: 17px; margin-top: 10px;
+    padding: 18px; border-radius: 14px; font-weight: 700; font-size: 17px; margin-top: 15px;
 }
-.locked-box { 
-    border: 1px solid var(--green); color: var(--green); 
-    text-align: center; padding: 15px; border-radius: 12px; font-weight: 600;
-}
+.locked-box { border: 1px solid var(--green); color: var(--green); text-align: center; padding: 20px; border-radius: 14px; }
 
-/* --- MINI CHART --- */
-.chart-container { display: flex; align-items: flex-end; gap: 4px; height: 30px; margin-top: 10px; }
-.bar { background: #3a3a3c; width: 100%; border-radius: 2px; transition: height 0.3s; }
-.bar.highlight { background: var(--accent); }
+/* --- CHART --- */
+.mini-chart { display: flex; align-items: flex-end; gap: 3px; height: 40px; margin-top: 10px; }
+.bar { background: #3a3a3c; flex: 1; border-radius: 1px; }
+.bar.active { background: var(--accent); }
+
+.backup-row { display: flex; gap: 10px; margin-top: 20px; }
+.btn-outline { background: none; border: 1px solid #333; color: var(--muted); padding: 8px; border-radius: 8px; font-size: 11px; flex: 1; }
 </style>
 </head>
 <body>
 
 <header>
     <div class="header-top">
-        <h1>Summary</h1>
-        <div id="ist-clock">--:--:-- IST</div>
+        <h1>Command</h1>
+        <div id="ist-clock">00:00:00 IST</div>
     </div>
-    <div class="date-sub">Tuesday, 3 March 2026</div>
+    <div style="font-size: 13px; color: var(--muted); margin-top: 4px;">Tuesday, 3 March 2026</div>
 </header>
 
 <div class="container">
-    <div class="section-label">Performance Rings</div>
     
+    <div class="section-label">Metabolic Brain</div>
     <div class="card">
-        <div class="card-header"><span style="color:var(--accent)">● Morning Weight</span></div>
-        <div class="card-value" id="disp-w">0.0 <span class="card-unit">kg</span></div>
-        <div class="chart-container" id="chart-w"></div>
-        <div class="card-footer" id="footer-w">Trend: Calculating...</div>
+        <div class="grid-2">
+            <div>
+                <div class="label">True TDEE</div>
+                <div class="val" id="val-tdee">----</div>
+                <div class="sub">Adaptive Baseline</div>
+            </div>
+            <div>
+                <div class="label">30D Forecast</div>
+                <div class="val" id="val-pred">--.-</div>
+                <div class="sub" id="val-pred-sub">kg predicted</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-label">Summary Overview</div>
+    <div class="grid-2">
+        <div class="card">
+            <div class="label" style="color:var(--accent)">Weight (7D)</div>
+            <div class="val" id="val-w">0.0</div>
+            <div class="mini-chart" id="chart-w"></div>
+        </div>
+        <div class="card">
+            <div class="label" style="color:var(--blue)">Compliance</div>
+            <div class="val" id="val-comp">0%</div>
+            <div class="sub">Streak: <span id="val-streak">0</span> days</div>
+        </div>
     </div>
 
     <div class="card">
-        <div class="card-header"><span style="color:#ff9f0a">● Energy Intake</span></div>
-        <div class="card-value" id="disp-c">0 <span class="card-unit">kcal</span></div>
-        <div class="card-footer" id="footer-c">Maintenance Est: --</div>
+        <div class="label" style="color:var(--blue)">💧 Hydration Level</div>
+        <div class="val"><span id="val-water">0.0</span> <span style="font-size:16px; font-weight:400; color:var(--muted)">Liters</span></div>
+        <div class="water-ctrl">
+            <button class="w-btn" onclick="updateWater(-0.25)">-</button>
+            <span style="font-size:12px; color:var(--muted)">+/- 250ml</span>
+            <button class="w-btn" onclick="updateWater(0.25)">+</button>
+        </div>
     </div>
 
     <div class="section-label">Log: March 2</div>
-    
     <div class="card" id="input-card">
         <div id="form-ui">
-            <div class="input-field">
-                <label>WEIGHT (KG)</label>
-                <input type="number" id="in-w" step="0.1" placeholder="00.0">
+            <div class="grid-2">
+                <div>
+                    <label>Weight (kg)</label>
+                    <input type="number" id="in-w" step="0.1" placeholder="80.0">
+                </div>
+                <div>
+                    <label>Intake (kcal)</label>
+                    <input type="number" id="in-c" placeholder="2200">
+                </div>
             </div>
-            <div class="input-field">
-                <label>INTAKE (KCAL)</label>
-                <input type="number" id="in-c" placeholder="0000">
+            <div class="grid-2" style="margin-top:10px">
+                <div>
+                    <label>Steps</label>
+                    <input type="number" id="in-s" placeholder="10000">
+                </div>
+                <div>
+                    <label>Gym RPE (1-10)</label>
+                    <select id="in-rpe">
+                        <option value="0">Rest Day</option>
+                        <option value="6">Light (6)</option>
+                        <option value="8">Target (8)</option>
+                        <option value="10">Max (10)</option>
+                    </select>
+                </div>
             </div>
-            <button class="btn-save" onclick="saveData()">Save to Protocol</button>
+            <button class="btn-main" onclick="executeLog()">Save Performance</button>
         </div>
         <div id="locked-ui" style="display:none" class="locked-box">
-            SYSTEM LOCKED: March 2 Data Finalized
+            PROTOCOL SEALED: March 2 Finalized
         </div>
     </div>
 
-    <div class="section-label">Consistency</div>
-    <div class="card">
-        <div class="card-header"><span style="color:var(--green)">● Compliance Score</span></div>
-        <div class="card-value" id="disp-comp">0%</div>
-        <div class="card-footer">Last 10 days of adherence</div>
+    <div class="backup-row">
+        <button class="btn-outline" onclick="exportData()">Export Backup (JSON)</button>
+        <button class="btn-outline" onclick="window.scrollTo(0,0)">Back to Top</button>
     </div>
+
 </div>
 
 <script>
 const YESTERDAY = "2026-03-02";
 
 // --- SEEDED DATA (Feb 21 - March 1) ---
-let dataStore = JSON.parse(localStorage.getItem('engine_v4_final')) || [
-    {date: "2026-02-21", w: 82.5, c: 2400},
-    {date: "2026-02-22", w: 82.3, c: 2300},
-    {date: "2026-02-23", w: 82.4, c: 2500},
-    {date: "2026-02-24", w: 82.1, c: 2200},
-    {date: "2026-02-25", w: 81.8, c: 2150},
-    {date: "2026-02-26", w: 81.9, c: 2400},
-    {date: "2026-02-27", w: 81.6, c: 2100},
-    {date: "2026-02-28", w: 81.4, c: 2200},
-    {date: "2026-03-01", w: 81.1, c: 2000}
+let db = JSON.parse(localStorage.getItem('engine_v5_final')) || [
+    {date: "2026-02-21", w: 82.5, c: 2400, s: 8000, rpe: 8, water: 3},
+    {date: "2026-02-22", w: 82.3, c: 2300, s: 7500, rpe: 0, water: 2.5},
+    {date: "2026-02-23", w: 82.4, c: 2500, s: 11000, rpe: 9, water: 3.5},
+    {date: "2026-02-24", w: 82.1, c: 2200, s: 10000, rpe: 7, water: 3},
+    {date: "2026-02-25", w: 81.8, c: 2150, s: 9500, rpe: 0, water: 2},
+    {date: "2026-02-26", w: 81.9, c: 2400, s: 12000, rpe: 8, water: 4},
+    {date: "2026-02-27", w: 81.6, c: 2100, s: 10000, rpe: 8, water: 3},
+    {date: "2026-02-28", w: 81.4, c: 2200, s: 8500, rpe: 0, water: 2.5},
+    {date: "2026-03-01", w: 81.1, c: 2000, s: 11000, rpe: 9, water: 3.5}
 ];
 
-// --- IST CLOCK ---
-function runClock() {
-    const now = new Date();
-    const ist = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (5.5 * 3600000));
+// --- CLOCK ---
+function updateClock() {
+    const ist = new Date(new Date().getTime() + (new Date().getTimezoneOffset() * 60000) + (5.5 * 3600000));
     document.getElementById('ist-clock').textContent = ist.toTimeString().split(' ')[0] + " IST";
 }
-setInterval(runClock, 1000); runClock();
+setInterval(updateClock, 1000); updateClock();
 
-// --- CORE ENGINE ---
-function refreshUI() {
-    const sorted = [...dataStore].sort((a,b) => a.date.localeCompare(b.date));
+// --- CORE LOGIC ---
+function render() {
+    const sorted = [...db].sort((a,b) => a.date.localeCompare(b.date));
     const loggedYesterday = sorted.some(d => d.date === YESTERDAY);
+    const yesterdayEntry = sorted.find(d => d.date === YESTERDAY) || { water: 0 };
 
     if(loggedYesterday) {
         document.getElementById('form-ui').style.display = 'none';
         document.getElementById('locked-ui').style.display = 'block';
     }
 
+    // Adaptive TDEE (True TDEE)
     const last7 = sorted.slice(-7);
     const avgW = last7.reduce((s,d) => s + d.w, 0) / last7.length;
     const avgC = last7.reduce((s,d) => s + d.c, 0) / last7.length;
+    const weightDelta = sorted[sorted.length-1].w - sorted[0].w;
+    const daysElapsed = (new Date(sorted[sorted.length-1].date) - new Date(sorted[0].date)) / 86400000;
+    const trueTDEE = avgC - ((weightDelta * 7700) / daysElapsed);
 
-    // Maintenance Calculation
-    const startW = sorted[0].w;
-    const endW = sorted[sorted.length-1].w;
-    const diffW = endW - startW;
-    const dayCount = (new Date(sorted[sorted.length-1].date) - new Date(sorted[0].date)) / 86400000;
-    const maint = avgC - ((diffW * 7700) / dayCount);
+    // 30D Forecast
+    const weeklyDeficit = (trueTDEE - avgC) * 7;
+    const predictedLoss = (weeklyDeficit / 7700) * 4.2; // 4.2 weeks in a month
+    const forecast = sorted[sorted.length-1].w - predictedLoss;
 
     // UI Updates
-    document.getElementById('disp-w').innerHTML = `${avgW.toFixed(1)} <span class="card-unit">kg</span>`;
-    document.getElementById('disp-c').innerHTML = `${avgC.toFixed(0)} <span class="card-unit">kcal</span>`;
-    document.getElementById('footer-c').textContent = `Maintenance Est: ${Math.round(maint)} kcal`;
-    document.getElementById('footer-w').textContent = `7D Trend: ${diffW < 0 ? '▼' : '▲'} ${Math.abs(diffW).toFixed(1)} kg`;
+    document.getElementById('val-tdee').textContent = Math.round(trueTDEE);
+    document.getElementById('val-pred').textContent = forecast.toFixed(1);
+    document.getElementById('val-pred-sub').textContent = `Est. weight by April 3`;
+    document.getElementById('val-w').textContent = avgW.toFixed(1);
+    document.getElementById('val-water').textContent = yesterdayEntry.water.toFixed(2);
 
-    // Bars
+    // Compliance & Streak
+    document.getElementById('val-comp').textContent = Math.round((sorted.length / 10) * 100) + "%";
+    document.getElementById('val-streak').textContent = sorted.length;
+
+    // Chart
     const chart = document.getElementById('chart-w');
     chart.innerHTML = '';
     last7.forEach((d, i) => {
         const bar = document.createElement('div');
-        bar.className = `bar ${i === last7.length-1 ? 'highlight' : ''}`;
-        bar.style.height = ((d.w - 70) * 4) + 'px'; // Dynamic scaling
+        bar.className = `bar ${i === last7.length-1 ? 'active' : ''}`;
+        bar.style.height = ((d.w - 70) * 3) + 'px';
         chart.appendChild(bar);
     });
-
-    const comp = Math.round((sorted.length / 10) * 100);
-    document.getElementById('disp-comp').textContent = comp + "%";
 }
 
-window.saveData = function() {
+window.updateWater = function(amt) {
+    let entry = db.find(d => d.date === YESTERDAY);
+    if(!entry) {
+        entry = { date: YESTERDAY, w: 0, c: 0, s: 0, rpe: 0, water: 0 };
+        db.push(entry);
+    }
+    entry.water = Math.max(0, entry.water + amt);
+    localStorage.setItem('engine_v5_final', JSON.stringify(db));
+    render();
+}
+
+window.executeLog = function() {
     const w = parseFloat(document.getElementById('in-w').value);
     const c = parseInt(document.getElementById('in-c').value);
-    if(!w || !c) return alert("Missing Data.");
-    dataStore.push({date: YESTERDAY, w, c});
-    localStorage.setItem('engine_v4_final', JSON.stringify(dataStore));
-    refreshUI();
+    const s = parseInt(document.getElementById('in-s').value);
+    const rpe = parseInt(document.getElementById('in-rpe').value);
+
+    if(!w || !c) return alert("Biometric failure: Fill all fields.");
+
+    let entry = db.find(d => d.date === YESTERDAY);
+    if(entry) {
+        entry.w = w; entry.c = c; entry.s = s; entry.rpe = rpe;
+    } else {
+        db.push({date: YESTERDAY, w, c, s, rpe, water: 0});
+    }
+    localStorage.setItem('engine_v5_final', JSON.stringify(db));
+    render();
 };
 
-refreshUI();
+window.exportData = function() {
+    const blob = new Blob([JSON.stringify(db, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `discipline_engine_backup_${YESTERDAY}.json`;
+    a.click();
+};
+
+render();
 </script>
 </body>
 </html>
