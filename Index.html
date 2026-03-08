@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SSC CGL Exam Simulator</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#eef2f6;
+margin:0;
+}
+
+#container{
+max-width:1000px;
+margin:auto;
+padding:20px;
+}
+
+.timer{
+font-size:20px;
+font-weight:bold;
+color:#d22;
+margin-bottom:10px;
+}
+
+.question-box{
+background:white;
+padding:20px;
+border-radius:8px;
+margin-bottom:15px;
+}
+
+.option{
+display:block;
+margin:6px 0;
+}
+
+button{
+padding:10px 16px;
+margin:5px;
+cursor:pointer;
+}
+
+.palette{
+display:grid;
+grid-template-columns:repeat(10,1fr);
+gap:6px;
+margin-top:20px;
+}
+
+.palette button{
+padding:8px;
+font-size:12px;
+}
+
+.answered{background:#4caf50;color:white}
+.review{background:#ff9800;color:white}
+.current{border:2px solid black}
+
+.result{
+background:white;
+padding:20px;
+border-radius:8px;
+margin-top:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="container">
+
+<h2>SSC CGL Exam Simulator</h2>
+
+<input type="file" id="csvInput">
+
+<p class="timer" id="timer">60:00</p>
+
+<div id="exam"></div>
+
+<div>
+<button onclick="prev()">Previous</button>
+<button onclick="markReview()">Mark for Review</button>
+<button onclick="next()">Next</button>
+<button onclick="submitTest()">Submit</button>
+</div>
+
+<h3>Question Navigation</h3>
+<div class="palette" id="palette"></div>
+
+<div id="result" class="result" style="display:none"></div>
+
+</div>
+
+<script>
+
+/* ========================
+QUESTION STORAGE
+======================== */
+
+let questions=[]
+let answers=[]
+let reviewFlags=[]
+let current=0
+
+/* ========================
+CSV IMPORTER
+======================== */
+
+document.getElementById("csvInput").addEventListener("change",function(e){
+
+const file=e.target.files[0]
+
+const reader=new FileReader()
+
+reader.onload=function(){
+
+let rows=reader.result.split("\n")
+
+questions=rows.slice(1).map(r=>{
+
+let c=r.split(",")
+
+return{
+section:c[0],
+q:c[1],
+options:[c[2],c[3],c[4],c[5]],
+answer:Number(c[6])
+}
+
+})
+
+answers=new Array(questions.length).fill(null)
+reviewFlags=new Array(questions.length).fill(false)
+
+createPalette()
+render()
+
+}
+
+reader.readAsText(file)
+
+})
+
+/* CSV FORMAT
+
+section,question,optA,optB,optC,optD,correctIndex
+
+Quant,What is 20% of 150?,20,25,30,35,2
+
+*/
+
+/* ========================
+QUESTION RENDER
+======================== */
+
+function render(){
+
+let q=questions[current]
+
+let html=`
+<div class="question-box">
+
+<h3>Question ${current+1}</h3>
+
+<p>${q.q}</p>
+`
+
+q.options.forEach((o,i)=>{
+
+html+=`
+<label class="option">
+
+<input type="radio"
+name="q"
+value="${i}"
+${answers[current]==i?"checked":""}
+onclick="save(${i})">
+
+${o}
+
+</label>
+`
+
+})
+
+html+="</div>"
+
+document.getElementById("exam").innerHTML=html
+
+updatePalette()
+
+}
+
+function save(i){
+answers[current]=i
+updatePalette()
+}
+
+/* ========================
+NAVIGATION
+======================== */
+
+function next(){
+if(current<questions.length-1){
+current++
+render()
+}
+}
+
+function prev(){
+if(current>0){
+current--
+render()
+}
+}
+
+function markReview(){
+
+reviewFlags[current]=!reviewFlags[current]
+
+updatePalette()
+
+}
+
+/* ========================
+PALETTE
+======================== */
+
+function createPalette(){
+
+let html=""
+
+for(let i=0;i<questions.length;i++){
+
+html+=`
+<button onclick="goto(${i})"
+id="p${i}">
+${i+1}
+</button>
+`
+
+}
+
+document.getElementById("palette").innerHTML=html
+
+}
+
+function goto(i){
+
+current=i
+render()
+
+}
+
+function updatePalette(){
+
+questions.forEach((q,i)=>{
+
+let b=document.getElementById("p"+i)
+
+b.classList.remove("answered","review","current")
+
+if(answers[i]!=null) b.classList.add("answered")
+
+if(reviewFlags[i]) b.classList.add("review")
+
+if(i==current) b.classList.add("current")
+
+})
+
+}
+
+/* ========================
+TIMER
+======================== */
+
+let time=3600
+
+setInterval(()=>{
+
+let m=Math.floor(time/60)
+let s=time%60
+
+document.getElementById("timer").innerText=
+`${m}:${s.toString().padStart(2,'0')}`
+
+time--
+
+if(time<0) submitTest()
+
+},1000)
+
+/* ========================
+RESULTS
+======================== */
+
+function submitTest(){
+
+let correct=0
+let wrong=0
+let skipped=0
+
+let sectionStats={}
+
+questions.forEach((q,i)=>{
+
+if(!sectionStats[q.section])
+sectionStats[q.section]={c:0,w:0}
+
+if(answers[i]==null){
+
+skipped++
+
+return
+
+}
+
+if(answers[i]==q.answer){
+
+correct++
+sectionStats[q.section].c++
+
+}else{
+
+wrong++
+sectionStats[q.section].w++
+
+}
+
+})
+
+let score=(correct*2)-(wrong*0.25)
+
+let attempted=correct+wrong
+
+let accuracy=attempted?
+((correct/attempted)*100).toFixed(2):0
+
+let html=`
+
+<h2>Results</h2>
+
+<p>Total Questions: ${questions.length}</p>
+
+<p>Attempted: ${attempted}</p>
+
+<p>Correct: ${correct}</p>
+
+<p>Wrong: ${wrong}</p>
+
+<p>Skipped: ${skipped}</p>
+
+<h3>Score: ${score.toFixed(2)}</h3>
+
+<p>Accuracy: ${accuracy}%</p>
+
+<h3>Section Analysis</h3>
+
+`
+
+for(let s in sectionStats){
+
+let x=sectionStats[s]
+
+html+=`
+<p><b>${s}</b> —
+Correct: ${x.c}
+Wrong: ${x.w}</p>
+`
+
+}
+
+document.getElementById("result").innerHTML=html
+
+document.getElementById("result").style.display="block"
+
+}
+
+</script>
+
+</body>
+</html>
